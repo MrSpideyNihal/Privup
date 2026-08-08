@@ -1,8 +1,10 @@
-# PRIVUP - VER 0.0.1 - OPEN SOURCE ARCH 
+# PRIVUP - VER 0.0.1 - OPEN SOURCE ARCH
 
-  PrivUp - goes for privacy up the main motive behind  PrivUp is that you will know what are you doing exactly while giving the access.
-  
-# PrivUp open-source arch is :
+PrivUp stands for **Privacy Up**.
+
+The main motive behind PrivUp is to help users understand **what they are actually agreeing to when giving access to a service, application, or company**.
+
+# PrivUp Open-Source Architecture
   
                          User gives a link or name of the service/app/company
                                               |                           
@@ -29,7 +31,109 @@
                            real or fake. We had to create some benchmarks too.
 
                         
-                        
+                      
+# Think Like
+
+```text
+                         CORE
+                          |
+             +------------+------------+
+             |            |            |
+             V            V            V
+          Scraper      Analyzer      Models
+             |            |
+             V            V
+         Document      Findings
+                          |
+                 +--------+--------+
+                 |                 |
+                 V                 V
+            Summarizer          Scorer
+                 |                 |
+                 +--------+--------+
+                          |
+                          V
+                     Final Result
+```
+
+# Thinking of File Structure
+
+```text
+PrivUp/
+│
+├── core/
+│   ├── scraper/
+│   │   ├── __init__.py
+│   │   ├── fetcher.py
+│   │   ├── extractor.py
+│   │   └── resolver.py
+│   │
+│   ├── summarizer/
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   └── ...
+│   │
+│   ├── analyzer/
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   └── ...
+│   │
+│   ├── scorer/
+│   │   ├── __init__.py
+│   │   └── scorer.py
+│   │
+│   ├── tags/
+│   │   ├── __init__.py
+│   │   └── registry.py
+│   │
+│   └── models/
+│       ├── __init__.py
+│       └── schemas.py
+│
+├── tests/
+│
+├── examples/
+│
+├── docs/
+│
+├── README.md
+├── pyproject.toml
+└── LICENSE
+```
+
+# Future
+
+The main goal is to use this core architecture later for a **web extension and mobile application**.
+
+For example, the extension could detect that a website or application is requesting **camera permission**.
+
+Instead of analyzing the entire privacy policy, it could send:
+
+```text
+camera
+```
+
+to the PrivUp core.
+
+The core would then find and analyze only the camera-related information from the policy and return the relevant result.
+
+```text
+User
+ |
+ | Camera Permission
+ V
+PrivUp
+ |
+ | camera tag
+ V
+Privacy Policy
+ |
+ V
+Camera-related information
+ |
+ V
+Summary + Score + Relevant Information
+```
 
 
                         
