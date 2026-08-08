@@ -103,18 +103,6 @@ PrivUp/
 
 # Future
 
-The main goal is to use this core architecture later for a **web extension and mobile application**.
-
-For example, the extension could detect that a website or application is requesting **camera permission**.
-
-Instead of analyzing the entire privacy policy, it could send:
-
-```text
-camera
-```
-
-to the PrivUp core.
-
 The core would then find and analyze only the camera-related information from the policy and return the relevant result.
 
 ```text
