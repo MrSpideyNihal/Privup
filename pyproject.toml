@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "privup"
+version = "0.0.1"
+description = "PrivUp project scaffold"
+requires-python = ">=3.11"
+dependencies = []

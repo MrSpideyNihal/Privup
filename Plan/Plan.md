@@ -62,6 +62,7 @@ The main motive behind PrivUp is to help users understand **what they are actual
 PrivUp/
 │
 ├── core/
+|   |__ main.py
 │   ├── scraper/
 │   │   ├── __init__.py
 │   │   ├── fetcher.py
