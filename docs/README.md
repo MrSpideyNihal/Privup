@@ -400,3 +400,60 @@ provenance("loan_charges_kissht_tou.txt")          # source URL, retrieval date
 - No network calls anywhere except inside a driver's `fetch()`.
 - Each module imports from `core/models/` and its own peers only.
 - New dependencies must be MIT or Apache 2.0. There are currently none.
+
+## Classification is a composition
+
+`RuleAnalyzer` is one classifier, not the whole of classification. Regex sits
+at a fixed point on the precision/recall curve — precise, and limited. Adding
+patterns slides along that curve; it does not lift it.
+
+```python
+from core.analyzer import CompositeAnalyzer, RuleAnalyzer
+from core.main import run
+
+verdict = run("raw_text", text, "generic",
+              analyzer=CompositeAnalyzer([RuleAnalyzer(), YourClassifier()]))
+```
+
+Every classifier emits the same `Finding`, so `core/scorer`, `core/main.py`,
+`cli/` and `ui/` cannot tell which one produced what. Set `available` to
+`False` when an optional model or dependency is missing and the classifier is
+skipped rather than crashing the pipeline, so the rule-only path always works.
+
+When two classifiers flag the same clause and category, one finding survives,
+chosen by confidence, then severity, then order of registration. Confidence
+outranks severity so a barely-confident classifier cannot shout down a certain
+one by calling something critical; severity outranks registration order
+because the scorer reads the worst finding, and quietly keeping the milder
+reading could turn a Warning into an Allow. The loser is recorded on the
+winner's `metadata["also_flagged_by"]` rather than discarded.
+
+`Finding.confidence` is what makes the mix legible: a deterministic rule match
+reports 1.0, and anything less says a judgement was involved.
+
+## Evaluation
+
+```bash
+python -m tests.evaluation             # per-category precision, recall, F1
+python -m tests.evaluation --failures  # what it got wrong, with the clause
+python -m tests.evaluation --json      # machine-readable
+```
+
+Scored against `tests/evaluation/labels.json`: real clauses from live policy
+pages, with provenance, deliberately including clauses the rules **miss**. A
+set built only from what we already catch measures nothing.
+
+The labels are marked as an unreviewed bootstrap, because ground truth written
+by the system under test is circular. When a label and the classifier
+disagree, correct the label; do not tune the rule until the number improves.
+
+`tests/evaluation/baseline.json` is the recorded score and a test fails if the
+current run drops below it. Moving it is fine and sometimes right, but it has
+to be deliberate and updated in the same commit.
+
+Evaluation is per clause per category, not per rule: two rules reaching the
+same conclusion is one correct answer, and a metric that counted rules would
+reward writing more of them. Document-scope rules are excluded, since every
+absence rule fires when a single clause is the whole document. Lending clauses
+are scored under both rule sets, because `generic` covers any service and
+`loan_app` supplements it.

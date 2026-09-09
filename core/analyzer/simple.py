@@ -74,7 +74,15 @@ def _fill(template: str, values: dict[str, Any]) -> str:
 
 
 class RuleAnalyzer(BaseAnalyzer):
-	"""Match clauses against a rule set, deterministically and offline."""
+	"""Match clauses against a rule set, deterministically and offline.
+
+	High precision, limited recall, and honest about which. It reports 1.0
+	confidence because a pattern either matched or it did not; that is not a
+	claim to have understood the sentence.
+	"""
+
+	name = "rules"
+	description = "Deterministic pattern matching against a rule set."
 
 	def classify(
 		self,

@@ -21,10 +21,13 @@
         "\\bno (?:fixed |set |specific )?(?:retention|deletion) (?:period|schedule)\\b",
         "\\bwithout (?:any )?time limit\\b"
       ],
-      "requires": ["\\b(?:retain|keep|store|hold|preserve|maintain)\\w*\\b|\\bdata\\b|\\binformation\\b"],
+      "requires": [
+        "\\b(?:retain|keep|store|hold|preserve|maintain)\\w*\\b|\\bdata\\b|\\binformation\\b"
+      ],
       "negations": [
         "\\b(?:do|does|shall|will|would) not (?:retain|keep|store|hold)\\b",
-        "\\bnever (?:retain|keep|store)\\b"
+        "\\bnever (?:retain|keep|store)\\b",
+        "['’ʼ]t\\b"
       ]
     },
     {
@@ -33,13 +36,21 @@
       "severity": "low",
       "reason": "How long your data is kept is described only as 'as long as necessary', with no actual period given.",
       "reference": "GDPR Art. 13(2)(a), the retention period must be stated",
-      "note": "Very common and not by itself alarming, which is why it is low. It becomes meaningful in combination: a service that will not say how long it keeps data and also shares it with third parties has told you very little.",
+      "note": "Very common and not by itself alarming, which is why it is low. It becomes meaningful in combination: a service that will not say how long it keeps data and also shares it with third parties has told you very little. Real policies rarely say 'indefinitely'. Google says 'We keep some data until you delete your Google Account', which is a retention statement with none of the retention vocabulary a pattern list would guess.",
       "patterns": [
         "\\bas long as (?:is )?(?:reasonably )?necessary\\b",
         "\\bfor as long as (?:we|the company|required)\\b",
-        "\\blong as needed\\b"
+        "\\blong as needed\\b",
+        "\\buntil you (?:delete|close|remove|deactivate)\\b",
+        "\\bfor only as long as\\b",
+        "\\bas long as we need\\b",
+        "\\bretain\\w*\\b[^.]{0,40}\\buntil\\b",
+        "\\bkeep\\w*\\b[^.]{0,40}\\buntil you\\b"
       ],
-      "negations": ["\\b\\d+\\s*(?:day|month|year)s?\\b"]
+      "negations": [
+        "\\b\\d+\\s*(?:day|month|year)s?\\b",
+        "['’ʼ]t\\b"
+      ]
     },
     {
       "id": "gdpr.sharing.sale",
@@ -57,7 +68,8 @@
         "\\b(?:do|does|shall|will|would) not\\b",
         "\\bnever\\b",
         "\\bwe don'?t\\b",
-        "\\bno(?:t)? (?:sell|rent|lease|trade)\\b"
+        "\\bno(?:t)? (?:sell|rent|lease|trade)\\b",
+        "['’ʼ]t\\b"
       ]
     },
     {
@@ -66,19 +78,24 @@
       "severity": "medium",
       "reason": "Your information is passed to third parties such as partners, affiliates or advertisers.",
       "reference": "GDPR Art. 13(1)(e), categories of recipients",
-      "note": "Sharing is normal and often necessary; the reason line says what happens rather than accusing anyone. Legal-obligation disclosures are negated out because a policy cannot promise not to answer a court order.",
+      "note": "Sharing is normal and often necessary; the reason line says what happens rather than accusing anyone. Legal-obligation disclosures are negated out because a policy cannot promise not to answer a court order. The verb list was too narrow. 'We work with third-party service providers' and 'We may receive information from advertisers and other data partners' are both disclosures a reader wants, and neither used a verb we matched.",
       "patterns": [
         "\\b(?:share|disclose|transfer|provide|sell|make available)\\w*\\b[^.]{0,60}\\b(?:third part|partner|affiliate|advertiser|vendor|service provider)\\w*\\b",
-        "\\bthird[- ]part(?:y|ies)\\b[^.]{0,60}\\b(?:access|receive|obtain)\\w*\\b"
+        "\\bthird[- ]part(?:y|ies)\\b[^.]{0,60}\\b(?:access|receive|obtain)\\w*\\b",
+        "\\b(?:work with|engage|rely on)\\b[^.]{0,50}\\b(?:third[- ]part|service provider|partner|vendor|affiliate)\\w*\\b",
+        "\\bwe (?:may )?(?:receive|obtain|get)\\b[^.]{0,50}\\bfrom\\b[^.]{0,40}\\b(?:partner|advertiser|data broker|third part)\\w*\\b",
+        "\\b(?:group|affiliated|other .{0,12}) companies\\b",
+        "\\bcredit (?:bureau|information compan)\\w*\\b",
+        "\\bbusiness transfer\\w*\\b|\\bmerger\\b|\\backquisition\\b"
       ],
       "negations": [
-        "\\b(?:do|does|shall|will|would) not (?:share|disclose|sell|transfer)\\b",
-        "\\bnever (?:share|disclose|sell)\\b",
-        "\\bwe don'?t (?:share|sell)\\b",
+        "\\b(?:do|does|shall|will|would) not (?:share|disclose|sell|transfer|provide|give|make available|grant)\\b",
+        "\\bnever (?:share|disclose|sell|provide)\\b",
         "\\b(?:required|compelled) by law\\b",
         "\\bcourt order\\b",
         "\\blaw enforcement\\b",
-        "\\blegal obligation\\b"
+        "\\blegal obligation\\b",
+        "['’ʼ]t\\b"
       ]
     },
     {
@@ -87,19 +104,23 @@
       "severity": "medium",
       "reason": "This service builds a profile of your behaviour and uses it to make decisions about you.",
       "reference": "GDPR Art. 4(4), profiling; Art. 22, automated decision-making",
-      "note": "Automated decision-making is singled out by Art. 22 because it affects people without a human ever looking. In a lending context this is also how a credit decision gets made about someone with no recourse.",
+      "note": "Automated decision-making is singled out by Art. 22 because it affects people without a human ever looking. In a lending context this is also how a credit decision gets made about someone with no recourse. Bare 'profile' was removed as a pattern: it matched 'add a profile picture' and 'Changing Your Profile Name And Picture', which are account settings, not profiling.",
       "patterns": [
-        "\\bprofil(?:e|es|ing)\\b",
+        "\\bprofiling\\b",
         "\\bbehaviou?ral (?:data|analys|advertis|profil|target)\\w*\\b",
         "\\bautomated decision\\w*\\b",
         "\\balgorithm\\w*\\b[^.]{0,40}\\b(?:decid|determin|assess|score)\\w*\\b",
         "\\bscoring model\\b",
-        "\\bcredit scor\\w+\\b"
+        "\\bcredit scor\\w+\\b",
+        "\\bbuild\\w*\\b[^.]{0,30}\\bprofile\\w*\\b\\s+(?:of|about) you\\b",
+        "\\buser profile\\w*\\b[^.]{0,40}\\b(?:advertis|target|infer)\\w*\\b"
       ],
       "negations": [
         "\\b(?:do|does|shall|will|would) not\\b",
         "\\bnever\\b",
-        "\\bwithout profiling\\b"
+        "\\bwithout profiling\\b",
+        "['’ʼ]t\\b",
+        "\\bprofile (?:picture|photo|name|image|pic)\\b"
       ]
     },
     {
@@ -122,7 +143,8 @@
         "\\b(?:do|does|shall|will|would) not\\b",
         "\\bnever\\b",
         "\\bblock\\w*\\b[^.]{0,30}\\btracking\\b",
-        "\\bprevent\\w*\\b[^.]{0,30}\\btracking\\b"
+        "\\bprevent\\w*\\b[^.]{0,30}\\btracking\\b",
+        "['’ʼ]t\\b"
       ]
     },
     {
@@ -143,7 +165,8 @@
         "\\b(?:do|does|shall|will|would) not\\b",
         "\\bnever\\b",
         "\\bwe don'?t\\b",
-        "\\bno (?:targeted )?(?:ads|advertising)\\b"
+        "\\bno (?:targeted )?(?:ads|advertising)\\b",
+        "['’ʼ]t\\b"
       ]
     },
     {
@@ -165,7 +188,8 @@
         "\\bwe don'?t\\b",
         "\\bopt(?:ed)? out\\b",
         "\\bexclud\\w*\\b",
-        "\\bwithout using your\\b"
+        "\\bwithout using your\\b",
+        "['’ʼ]t\\b"
       ]
     },
     {
@@ -176,9 +200,10 @@
       "reference": "GDPR Art. 4(11), consent must be freely given and unambiguous",
       "note": "Consent by continued use is not consent under Art. 4(11). Live example: Fibe's policy reads 'By using the Application, you signify your consent to our use of cookies.'",
       "patterns": [
-        "\\bby (?:using|accessing|continuing to use|downloading|installing)\\b[^.]{0,80}\\b(?:you (?:agree|consent|accept|acknowledge)|signif\\w+ your consent)\\b",
+        "\\bby (?:using|accessing|continuing to use|downloading|installing|mere use)\\b[^.]{0,90}\\b(?:you (?:agree|consent|accept|acknowledge|indicate|understand)|signif\\w+ your consent)\\b",
         "\\bcontinued use\\b[^.]{0,60}\\b(?:constitutes?|signifies|means)\\b",
-        "\\bdeemed to have (?:agreed|consented|accepted)\\b"
+        "\\bdeemed to have (?:agreed|consented|accepted)\\b",
+        "\\bexpressly and (?:unconditionally|irrevocably) (?:agree|consent)\\b"
       ]
     },
     {
@@ -193,7 +218,9 @@
         "\\bwithout (?:prior )?notice\\b[^.]{0,60}\\b(?:modify|change|amend|update)\\w*\\b",
         "\\breserve the right to (?:modify|change|amend|update|revise)\\b"
       ],
-      "requires": ["\\b(?:polic|terms?|agreement|condition)\\w*\\b"]
+      "requires": [
+        "\\b(?:polic|terms?|agreement|condition)\\w*\\b"
+      ]
     },
     {
       "id": "gdpr.transfer.cross_border",
@@ -208,7 +235,11 @@
         "\\bcross[- ]border (?:transfer|data)\\w*\\b",
         "\\binternational (?:data )?transfers?\\b"
       ],
-      "negations": ["\\b(?:do|does|shall|will|would) not transfer\\b", "\\bnever transfer\\b"]
+      "negations": [
+        "\\b(?:do|does|shall|will|would) not transfer\\b",
+        "\\bnever transfer\\b",
+        "['’ʼ]t\\b"
+      ]
     },
     {
       "id": "gdpr.security.disclaimed",

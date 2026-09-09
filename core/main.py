@@ -31,7 +31,8 @@ from pathlib import Path
 if __package__ is None or __package__ == "":
 	sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from core.analyzer.simple import RuleAnalyzer
+from core.analyzer.base import Classifier
+from core.analyzer.composite import default_analyzer
 from core.models import Verdict
 from core.scorer.scorer import Scorer
 from core.scraper import available_drivers, get_driver
@@ -42,8 +43,18 @@ from core.tags.relevance import check_relevance
 __all__ = ["run", "run_pipeline"]
 
 
-def run(driver_name: str, target: str, tag_set_name: str) -> Verdict:
+def run(
+	driver_name: str,
+	target: str,
+	tag_set_name: str,
+	analyzer: Classifier | None = None,
+) -> Verdict:
 	"""Analyze ``target`` with ``driver_name`` against ``tag_set_name``.
+
+	``analyzer`` defaults to the deterministic rule matcher. Pass a
+	``CompositeAnalyzer`` to add a model-backed classifier alongside it; every
+	stage after this one takes ``Finding`` objects and cannot tell the
+	difference, which is the point of the seam.
 
 	Raises ``UnknownDriverError`` or ``UnknownTagSetError`` for a bad name,
 	and ``DriverError`` when the target cannot be read. Those are surfaced
@@ -52,10 +63,11 @@ def run(driver_name: str, target: str, tag_set_name: str) -> Verdict:
 	"""
 	driver = get_driver(driver_name)
 	rule_set = get_tag_set(tag_set_name)
+	classifier = analyzer or default_analyzer()
 
 	result = driver.fetch(target)
 	clauses = SimpleSummarizer().clean(result)
-	findings = RuleAnalyzer().classify(clauses, rule_set, origin=result.origin)
+	findings = classifier.classify(clauses, rule_set, origin=result.origin)
 
 	verdict = Scorer().score(
 		findings,
