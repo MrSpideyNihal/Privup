@@ -1,0 +1,44 @@
+# source: https://www.kissht.com/terms-of-service
+# retrieved: 2026-09-09
+# note: Terms of use with the real schedule of charges: interest, processing fee, penal rate.
+# excerpt only, real text, not the complete document
+# ---
+Other terms & conditions
+It will be the sole responsibility of the Customer to ensure that the use of name and password are kept confidential and not disclosed to any third party, including any representative of Kissht, or its agents and shall take all possible care to prevent discovery of the under name or password by any person.
+Kissht makes no representations about the timeliness, of the services contained on the Kissht web site for any purpose.
+Kissht makes no representations about the suitability, reliability, availability, of the services contained on the Kissht web site for any purpose.
+Kissht shall not be responsible if any information/ database/ statement/ certificate/ page is printed/ downloaded from Kissht's site and after printing/ downloading complete/partial, text/information is altered/ removed/ obscured contained therein.
+Kissht, at no event, be liable/ responsible for any direct, indirect, punitive, incidental, special, consequential damages or any damages for the delay or inability to use the Kissht web site, or failure to provide services, or for any information, date, statement, certificate, software, and any other services obtained through the Kissht web sites, or otherwise arising out of the use of Kissht web site.
+Kissht reserves the right to suspend these services if in Kissht's opinion security of the site or of the data could be compromised.
+Kissht may also suspend services on the web site for any customer at its sole discretion without assigning any reason whatsoever. In such event user shall contact Kissht offices for any clarification.
+Interest
+Interest:
+We give loans to out customers thorugh a fixed rate loan. The products offered by us and the interest rate charged on different products are as follows:
+# | Parameters | Long-Term Loans >48m to 60m | Long-Term Loans 36m to 48m | Long-Term Loans 6m to <36m
+1 | Rate of Interest (%) | Up to 36% p.a. | Up to 36% p.a. | Up to 36% p.a.
+Schedule of Charges
+Sr No. | Parameters | Long-Term Loans >48m to 60m | Long-Term Loans 36m to 48m | Long-Term Loans 6m to <36m
+1 | Processing fees | Up to 7% | Up to 7% | Up to 7%
+2 | Cooling off Period and Charges | 3 days Charges: up to 100% of processing fees may be levied for loan foreclosure during the cooling off period | 3 days Charges: up to 100% of processing fees may be levied for loan foreclosure during the cooling off period | 3 days Charges: up to 100% of processing fees may be levied for loan foreclosure during the cooling off period
+3 | Foreclosure and part prepayment charges | Up to 7% of amount foreclosed/ prepaid | Up to 7% of amount foreclosed/ prepaid | Up to 7% of amount foreclosed/ prepaid
+4 | a. One-time charges | Up to Rs. 1,500 | Up to Rs. 1,500 | Up to Rs. 1,500
+b. Daily Penal Charges | Penal Charges for a continuing default in repayment of an EMI. Daily charges of up to 0.2% of the overdue principal amount | Penal Charges for a continuing default in repayment of an EMI. Daily charges of up to 0.2% of the overdue principal amount | Penal Charges for a continuing default in repayment of an EMI. Daily charges of up to 0.2% of the overdue principal amount
+5 | Other Charges | Stamp duty, GST, and other cess, if applicable would be collected at applicable rates from time to time. | Stamp duty, GST, and other cess, if applicable would be collected at applicable rates from time to time. | Stamp duty, GST, and other cess, if applicable would be collected at applicable rates from time to time.
+Changes to Website or Policy
+Kissht reserves the right to modify the User Interface, appearance, contents, organization, location and accessibility of the Website and/ or the Policy on Website Use at any time without prior notice.
+The User is expected to keep himself/ herself updated of any changes made in this Website and the information available on it on a regular basis and Kissht undertakes no responsibility about advising/intimating the User about any such changes.
+It is imperative to note that Kissht has taken required efforts to ensure that the information/ statement/ certificate provided on Kissht's Web Site is reasonably accurate, however, Kissht does not warrant its accuracy, completeness or suitability, correctness, adequacy validity, whatsoever for any purpose. As such database provided is without any warranty, express or implied, as to their legal effect.
+Non-Compliance with Policy/Terms of Website Use
+If you (User) breach the terms & conditions/Policy on Website Use in any way, or if we suspect that you have breached these terms & conditions/Policy on Website Use in any way, we may take necessary steps as follows:
+(i) send you one or more formal warnings; (ii) temporarily/permanently block your access to the Website; (iii) block all computers/devices using your IP address from accessing the Website; (v) request your internet service providers to block your access to Website; (vi) commence legal action against you, for recovery of amounts due or damages arising out of your breach of terms & conditions/Policy on Website Use; and/or (vii) suspend or delete your account on Website.
+The User herein agrees to indemnify and hold us harmless from and against any and all claims, action, liability, cost, loss, damage, endured by us by your access to the Website.
+Links to Other Sites
+The Website may offer links to sites that are not under Kissht's control. If the Customers (Users) visit any of these links, it's their responsibility to review each site's terms of use. Kissht does not assume any responsibility/liability for any obligations or offers given on such sites and is neither responsible for the contents, policies and practices of such sites as well as Kissht is not liable for any loss, damage or expense arising from use of such sites.
+Governing Law
+The use of this Website and the Policy on Website Use shall be governed by Indian law. The Policy on Website Use and your activity under this Policy are an 'electronic record' in accordance with the (Indian) Information Technology Act, 2000.
+Limitation of Liability
+Though, Kissht has taken proper care/precaution to make the database reliable, Kissht will not be held responsible for any liability that may arise out of any such error in the data base. Further, Kissht does not represent/claim that Kissht's Web Site is free of viruses or harmful components.
+Use of any information/statement/certificate on Kissht's Web site shall be at your own risk. All information/statements/certificates should be used in accordance with applicable laws. Kissht, its subsidiary companies, its affiliates, and their directors and employees, accept no liability and will not be liable for any loss or damage arising directly or indirectly from use of this Website.
+In case of transaction/ statement /certificate is not in agreement with your record or with the information that you have, you are requested to write to Kissht. You are free to mail your queries on care@kissht.com.
+Kissht has provided information/data base on the Web Site on an "as is where is " basis. Kissht expressly disclaims to the maximum limit permissible by law, all warranties, express or implied, including, but not limiting to implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+Kissht disclaims all responsibility for any loss, damage or expense arising from, but not limited to, any defect, error, omission, interruption, imperfection, fault, mistake or inaccuracy with this Website, its Contents or associated services, or due to any unavailability of the web site or any part thereof or any contents or associated services even if the Entities are advised of the possibility of such damages, losses or expenses.

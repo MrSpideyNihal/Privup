@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editors / OS
+.vscode/
+.idea/
+desktop.ini
+.DS_Store
+Thumbs.db
+
+# Scratch space for pulling real policy pages when building fixtures
+scratch_fixtures/

@@ -1,0 +1,247 @@
+{
+  "name": "generic",
+  "description": "GDPR-pattern red flags that apply to any service: how long data is kept, who it goes to, whether you are being profiled, and whether you can say no.",
+  "reference": "Regulation (EU) 2016/679 (GDPR), read as a set of general expectations rather than as a jurisdiction claim",
+  "metadata": {
+    "note": "These rules describe patterns, not legal conclusions. A finding here means a user should read a clause, not that a company is breaking the law."
+  },
+  "rules": [
+    {
+      "id": "gdpr.retention.indefinite",
+      "category": "data_retention",
+      "severity": "high",
+      "reason": "This service keeps your data indefinitely. There is no point at which it is deleted.",
+      "reference": "GDPR Art. 5(1)(e), storage limitation",
+      "note": "Storage limitation requires data to be kept no longer than necessary for the stated purpose. 'Indefinitely' and 'perpetual' are the explicit failures of that principle.",
+      "patterns": [
+        "\\bindefinite(?:ly)?\\b",
+        "\\bperpetu(?:al|ity)\\b",
+        "\\bin perpetuity\\b",
+        "\\bforever\\b",
+        "\\bno (?:fixed |set |specific )?(?:retention|deletion) (?:period|schedule)\\b",
+        "\\bwithout (?:any )?time limit\\b"
+      ],
+      "requires": ["\\b(?:retain|keep|store|hold|preserve|maintain)\\w*\\b|\\bdata\\b|\\binformation\\b"],
+      "negations": [
+        "\\b(?:do|does|shall|will|would) not (?:retain|keep|store|hold)\\b",
+        "\\bnever (?:retain|keep|store)\\b"
+      ]
+    },
+    {
+      "id": "gdpr.retention.vague",
+      "category": "data_retention",
+      "severity": "low",
+      "reason": "How long your data is kept is described only as 'as long as necessary', with no actual period given.",
+      "reference": "GDPR Art. 13(2)(a), the retention period must be stated",
+      "note": "Very common and not by itself alarming, which is why it is low. It becomes meaningful in combination: a service that will not say how long it keeps data and also shares it with third parties has told you very little.",
+      "patterns": [
+        "\\bas long as (?:is )?(?:reasonably )?necessary\\b",
+        "\\bfor as long as (?:we|the company|required)\\b",
+        "\\blong as needed\\b"
+      ],
+      "negations": ["\\b\\d+\\s*(?:day|month|year)s?\\b"]
+    },
+    {
+      "id": "gdpr.sharing.sale",
+      "category": "third_party_sharing",
+      "severity": "high",
+      "reason": "This service sells or rents your personal information to other companies.",
+      "reference": "GDPR Art. 6, lawful basis; Art. 13(1)(e), recipients",
+      "note": "The negation list matters more than the patterns here. Most policies mention selling data specifically in order to promise they do not: Fibe's live policy reads 'We do not sell, rent, lease your Personal Information to anybody and will never do so.'",
+      "patterns": [
+        "\\bsell\\w*\\b[^.]{0,40}\\b(?:personal (?:data|information)|your (?:data|information))\\b",
+        "\\b(?:rent|lease|trade|monetis|monetiz)\\w*\\b[^.]{0,40}\\b(?:personal (?:data|information)|your (?:data|information))\\b",
+        "\\bdata brokers?\\b"
+      ],
+      "negations": [
+        "\\b(?:do|does|shall|will|would) not\\b",
+        "\\bnever\\b",
+        "\\bwe don'?t\\b",
+        "\\bno(?:t)? (?:sell|rent|lease|trade)\\b"
+      ]
+    },
+    {
+      "id": "gdpr.sharing.third_party",
+      "category": "third_party_sharing",
+      "severity": "medium",
+      "reason": "Your information is passed to third parties such as partners, affiliates or advertisers.",
+      "reference": "GDPR Art. 13(1)(e), categories of recipients",
+      "note": "Sharing is normal and often necessary; the reason line says what happens rather than accusing anyone. Legal-obligation disclosures are negated out because a policy cannot promise not to answer a court order.",
+      "patterns": [
+        "\\b(?:share|disclose|transfer|provide|sell|make available)\\w*\\b[^.]{0,60}\\b(?:third part|partner|affiliate|advertiser|vendor|service provider)\\w*\\b",
+        "\\bthird[- ]part(?:y|ies)\\b[^.]{0,60}\\b(?:access|receive|obtain)\\w*\\b"
+      ],
+      "negations": [
+        "\\b(?:do|does|shall|will|would) not (?:share|disclose|sell|transfer)\\b",
+        "\\bnever (?:share|disclose|sell)\\b",
+        "\\bwe don'?t (?:share|sell)\\b",
+        "\\b(?:required|compelled) by law\\b",
+        "\\bcourt order\\b",
+        "\\blaw enforcement\\b",
+        "\\blegal obligation\\b"
+      ]
+    },
+    {
+      "id": "gdpr.tracking.profiling",
+      "category": "tracking_profiling",
+      "severity": "medium",
+      "reason": "This service builds a profile of your behaviour and uses it to make decisions about you.",
+      "reference": "GDPR Art. 4(4), profiling; Art. 22, automated decision-making",
+      "note": "Automated decision-making is singled out by Art. 22 because it affects people without a human ever looking. In a lending context this is also how a credit decision gets made about someone with no recourse.",
+      "patterns": [
+        "\\bprofil(?:e|es|ing)\\b",
+        "\\bbehaviou?ral (?:data|analys|advertis|profil|target)\\w*\\b",
+        "\\bautomated decision\\w*\\b",
+        "\\balgorithm\\w*\\b[^.]{0,40}\\b(?:decid|determin|assess|score)\\w*\\b",
+        "\\bscoring model\\b",
+        "\\bcredit scor\\w+\\b"
+      ],
+      "negations": [
+        "\\b(?:do|does|shall|will|would) not\\b",
+        "\\bnever\\b",
+        "\\bwithout profiling\\b"
+      ]
+    },
+    {
+      "id": "gdpr.tracking.cross_site",
+      "category": "tracking_profiling",
+      "severity": "medium",
+      "reason": "You are tracked across other websites and apps, not just while using this one.",
+      "reference": "GDPR Art. 5(1)(a), transparency; ePrivacy Directive Art. 5(3)",
+      "note": "Tracking that follows a user off the property is the thing people are least likely to expect and most likely to object to.",
+      "patterns": [
+        "\\bcross[- ]site\\b",
+        "\\bacross (?:other |third[- ]party )?(?:websites?|apps?|services?|devices?)\\b",
+        "\\b(?:device )?fingerprint\\w*\\b",
+        "\\btracking pixels?\\b",
+        "\\bweb beacons?\\b",
+        "\\bthird[- ]party cookies\\b",
+        "\\badvertising (?:identifier|ID)\\b"
+      ],
+      "negations": [
+        "\\b(?:do|does|shall|will|would) not\\b",
+        "\\bnever\\b",
+        "\\bblock\\w*\\b[^.]{0,30}\\btracking\\b",
+        "\\bprevent\\w*\\b[^.]{0,30}\\btracking\\b"
+      ]
+    },
+    {
+      "id": "gdpr.tracking.targeted_ads",
+      "category": "tracking_profiling",
+      "severity": "medium",
+      "reason": "Your data is used to target advertising at you.",
+      "reference": "GDPR Art. 21(2), the right to object to direct marketing",
+      "note": "Art. 21(2) gives an unconditional right to object. Worth surfacing precisely because the opt-out usually exists but is buried.",
+      "patterns": [
+        "\\btargeted (?:advertis|market|ad)\\w*\\b",
+        "\\b(?:interest|behaviou?r)[- ]based (?:advertis|ad)\\w*\\b",
+        "\\bpersonalis(?:e|ed|ing) (?:ads?|advertis)\\w*\\b",
+        "\\bpersonaliz(?:e|ed|ing) (?:ads?|advertis)\\w*\\b",
+        "\\bad(?:vertising)? (?:network|partner)s?\\b"
+      ],
+      "negations": [
+        "\\b(?:do|does|shall|will|would) not\\b",
+        "\\bnever\\b",
+        "\\bwe don'?t\\b",
+        "\\bno (?:targeted )?(?:ads|advertising)\\b"
+      ]
+    },
+    {
+      "id": "ai.training_on_user_content",
+      "category": "model_training",
+      "severity": "high",
+      "reason": "What you upload here is used to train the company's AI models. Your photos, files or messages become training data.",
+      "reference": "GDPR Art. 5(1)(b), purpose limitation",
+      "note": "This is the permission-purpose mismatch case: a camera permission granted so you can take a picture, and a policy elsewhere that quietly repurposes the picture as training data. Purpose limitation is the principle being stretched, and the granting of the permission is not where the user finds out.",
+      "patterns": [
+        "\\btrain\\w*\\b[^.]{0,60}\\b(?:models?|AI|artificial intelligence|machine learning|algorithms?|LLM)\\b",
+        "\\b(?:models?|AI|machine learning|algorithms?)\\b[^.]{0,60}\\btrain\\w*\\b",
+        "\\bimprove\\w*\\b[^.]{0,40}\\b(?:models?|AI|machine learning)\\b",
+        "\\btraining data\\b"
+      ],
+      "negations": [
+        "\\b(?:do|does|shall|will|would) not\\b",
+        "\\bnever\\b",
+        "\\bwe don'?t\\b",
+        "\\bopt(?:ed)? out\\b",
+        "\\bexclud\\w*\\b",
+        "\\bwithout using your\\b"
+      ]
+    },
+    {
+      "id": "gdpr.consent.bundled",
+      "category": "consent",
+      "severity": "medium",
+      "reason": "Simply using the service is treated as your agreement. You are not actually being asked.",
+      "reference": "GDPR Art. 4(11), consent must be freely given and unambiguous",
+      "note": "Consent by continued use is not consent under Art. 4(11). Live example: Fibe's policy reads 'By using the Application, you signify your consent to our use of cookies.'",
+      "patterns": [
+        "\\bby (?:using|accessing|continuing to use|downloading|installing)\\b[^.]{0,80}\\b(?:you (?:agree|consent|accept|acknowledge)|signif\\w+ your consent)\\b",
+        "\\bcontinued use\\b[^.]{0,60}\\b(?:constitutes?|signifies|means)\\b",
+        "\\bdeemed to have (?:agreed|consented|accepted)\\b"
+      ]
+    },
+    {
+      "id": "gdpr.change.unilateral",
+      "category": "unilateral_change",
+      "severity": "medium",
+      "reason": "The company can change these terms whenever it likes, without telling you first.",
+      "reference": "GDPR Art. 12(1), transparency of changes",
+      "note": "Live example: Kissht's terms read 'We reserve the right to update or modify the Terms of Use at any time, without prior notice, at our sole discretion.' Terms you agreed to once are not the terms you are held to later.",
+      "patterns": [
+        "\\b(?:modify|change|amend|update|revise)\\w*\\b[^.]{0,80}\\b(?:without (?:prior )?notice|at any time|sole discretion)\\b",
+        "\\bwithout (?:prior )?notice\\b[^.]{0,60}\\b(?:modify|change|amend|update)\\w*\\b",
+        "\\breserve the right to (?:modify|change|amend|update|revise)\\b"
+      ],
+      "requires": ["\\b(?:polic|terms?|agreement|condition)\\w*\\b"]
+    },
+    {
+      "id": "gdpr.transfer.cross_border",
+      "category": "cross_border_transfer",
+      "severity": "medium",
+      "reason": "Your data is sent to servers in other countries, where different privacy laws apply.",
+      "reference": "GDPR Chapter V, transfers to third countries",
+      "note": "Not wrong in itself, and Chapter V exists to make it lawful. Reported so a user knows which legal system is actually protecting their data.",
+      "patterns": [
+        "\\btransfer\\w*\\b[^.]{0,60}\\b(?:outside|other countr|another countr|abroad|overseas)\\w*\\b",
+        "\\bservers? (?:located|hosted|based) (?:in|outside)\\b",
+        "\\bcross[- ]border (?:transfer|data)\\w*\\b",
+        "\\binternational (?:data )?transfers?\\b"
+      ],
+      "negations": ["\\b(?:do|does|shall|will|would) not transfer\\b", "\\bnever transfer\\b"]
+    },
+    {
+      "id": "gdpr.security.disclaimed",
+      "category": "security",
+      "severity": "low",
+      "reason": "The company states it cannot guarantee your data is secure.",
+      "reference": "GDPR Art. 32, security of processing",
+      "note": "Near-universal boilerplate and honest in its way, which is why it is low rather than medium. Included so the absence of it is also visible.",
+      "patterns": [
+        "\\b(?:cannot|can not|can'?t|no|not) (?:guarantee|ensure|warrant)\\w*\\b[^.]{0,60}\\b(?:secur|safe|protect)\\w*\\b",
+        "\\bno method of (?:transmission|storage)\\b[^.]{0,60}\\b(?:100%|completely|entirely) secure\\b",
+        "\\bat your own risk\\b"
+      ]
+    },
+    {
+      "id": "gdpr.optout.absent",
+      "category": "consent",
+      "severity": "high",
+      "scope": "document_absent",
+      "reason": "This policy never explains how to opt out, withdraw consent, or delete your data. There is no stated way to say no.",
+      "reference": "GDPR Art. 7(3), the right to withdraw consent; Art. 17, erasure",
+      "note": "Absence is the finding, so this rule is document-scoped: no individual clause is wrong, the document as a whole is missing something a reader needs. Art. 7(3) requires withdrawing consent to be as easy as giving it, which is impossible if the policy never says how.",
+      "patterns": [
+        "\\bopt[- ]?out\\b",
+        "\\bopt[- ]?in\\b",
+        "\\b(?:withdraw|revoke|rescind)\\w*\\b[^.]{0,60}\\bconsent\\b",
+        "\\bconsent\\b[^.]{0,60}\\b(?:withdraw|revoke)\\w*\\b",
+        "\\bunsubscribe\\b",
+        "\\bdelete (?:your|the) (?:account|data|personal (?:data|information))\\b",
+        "\\bright to (?:erasure|be forgotten|object|deletion)\\b",
+        "\\bdata deletion\\b",
+        "\\bdisable (?:cookies|tracking)\\b"
+      ]
+    }
+  ]
+}
