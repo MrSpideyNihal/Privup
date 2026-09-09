@@ -4,7 +4,33 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "privup"
-version = "0.0.1"
-description = "PrivUp project scaffold"
+version = "0.1.0"
+description = "On-device privacy policy intelligence engine"
 requires-python = ">=3.11"
+
+# Intentionally empty. The whole pipeline is standard library only, which
+# keeps the Part 3 port to a browser extension and to Android honest, and
+# means someone can audit every line that runs on their device without
+# auditing a dependency tree first.
+#
+# Any dependency added here must be MIT or Apache 2.0 licensed.
 dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+# Third-party drivers register here and are discovered automatically.
+# See core/scraper/registry.py.
+#
+# [project.entry-points."privup.drivers"]
+# play_store = "your_package.play_store_driver"
+
+[tool.setuptools.packages.find]
+include = ["core*"]
+
+[tool.setuptools.package-data]
+"core.tags" = ["rulesets/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
