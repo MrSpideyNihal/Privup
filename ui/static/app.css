@@ -1,0 +1,511 @@
+/* PrivUp local UI.
+ *
+ * Built to the reference direction: soft neutral ground, white cards lifted
+ * off it, one saturated accent, heavy tight display type, pill controls.
+ *
+ * Two rules keep it from collapsing into a generic card kit. Elevation is a
+ * hierarchy, not a default: the verdict sits highest, tiles sit lower,
+ * findings sit flat until opened. And the accent is the verdict colour, so
+ * the loudest thing on screen is always the answer, never decoration.
+ *
+ * Fonts are system stacks on purpose. A webfont request would be the only
+ * thing on this page that talked to the internet.
+ */
+
+:root {
+  --ground: #ECECEA;
+  --card: #FFFFFF;
+  --sunken: #F4F4F2;
+  --ink: #16181C;
+  --ink-soft: #61656E;
+  --ink-faint: #9A9EA6;
+  --hairline: #E2E2DF;
+
+  --allow: #2E8B62;
+  --warning: #C2761C;
+  --deny: #E1573A;
+  --carbon: #16181C;
+
+  --accent: var(--deny);
+  --accent-ink: #FFFFFF;
+
+  --r-card: 26px;
+  --r-inner: 18px;
+  --r-pill: 999px;
+
+  --lift-high: 0 18px 40px -18px rgba(22, 24, 28, .34);
+  --lift-low: 0 4px 14px -8px rgba(22, 24, 28, .18);
+
+  --sans: "Inter Tight", "Segoe UI Variable Display", "Segoe UI", Inter,
+          system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+
+  --step: clamp(1rem, 0.6rem + 0.5vw, 1.0625rem);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--step);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  max-width: 43rem;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 4vw, 3rem) clamp(1rem, 4vw, 1.5rem) 3rem;
+}
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1.75rem;
+}
+
+.mark {
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--carbon);
+  position: relative;
+  margin-top: .35rem;
+}
+
+/* A quarter dial: the smallest possible drawing of "reading a document". */
+.mark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--deny) 0 25%, transparent 25% 100%);
+  mask: radial-gradient(circle at 50% 50%, transparent 44%, #000 45%);
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 44%, #000 45%);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 1.1rem + 3.2vw, 3rem);
+  line-height: 1.02;
+  letter-spacing: -0.033em;
+  font-weight: 700;
+}
+
+.standfirst {
+  margin: .7rem 0 0;
+  color: var(--ink-soft);
+  max-width: 34ch;
+}
+
+/* ---------- composer ---------- */
+
+.composer {
+  background: var(--card);
+  border-radius: var(--r-card);
+  padding: 1rem;
+  box-shadow: var(--lift-low);
+}
+
+.segmented {
+  display: flex;
+  gap: .25rem;
+  padding: .3rem;
+  background: var(--sunken);
+  border-radius: var(--r-pill);
+  margin-bottom: 1rem;
+}
+
+.segmented button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  border-radius: var(--r-pill);
+  padding: .6rem .5rem;
+  font: inherit;
+  font-weight: 550;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+}
+
+.segmented button:hover { color: var(--ink); }
+
+.segmented button[aria-checked="true"] {
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--lift-low);
+}
+
+.field { display: block; }
+
+.field-label {
+  display: block;
+  font-size: .875rem;
+  font-weight: 550;
+  color: var(--ink-soft);
+  padding: 0 .4rem .45rem;
+}
+
+textarea {
+  width: 100%;
+  border: 1px solid var(--hairline);
+  background: var(--sunken);
+  border-radius: var(--r-inner);
+  padding: .9rem 1rem;
+  font: inherit;
+  color: var(--ink);
+  resize: vertical;
+  min-height: 7.5rem;
+  transition: border-color .18s ease, background .18s ease;
+}
+
+textarea::placeholder { color: var(--ink-faint); }
+
+textarea:focus {
+  outline: none;
+  background: var(--card);
+  border-color: var(--ink-faint);
+}
+
+.composer-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .85rem .4rem 0;
+}
+
+.hint {
+  margin: 0;
+  font-size: .8125rem;
+  color: var(--ink-faint);
+}
+
+.analyze {
+  flex: none;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--carbon);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  padding: .78rem 1.7rem;
+  cursor: pointer;
+  transition: transform .12s ease, opacity .18s ease;
+}
+
+.analyze:hover { opacity: .88; }
+.analyze:active { transform: scale(.98); }
+.analyze[disabled] { opacity: .45; cursor: progress; }
+
+/* ---------- status ---------- */
+
+.status {
+  margin-top: 1rem;
+  padding: .95rem 1.15rem;
+  border-radius: var(--r-inner);
+  background: var(--card);
+  box-shadow: var(--lift-low);
+  color: var(--ink-soft);
+}
+
+.status[data-kind="error"] {
+  color: var(--deny);
+  font-weight: 550;
+}
+
+/* ---------- verdict ---------- */
+
+.result { margin-top: 1.25rem; }
+
+.verdict {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  justify-content: space-between;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--r-card);
+  padding: 1.4rem 1.5rem;
+  box-shadow: var(--lift-high);
+}
+
+.verdict-kicker {
+  margin: 0 0 .3rem;
+  font-size: .8125rem;
+  font-weight: 600;
+  opacity: .82;
+}
+
+.verdict-line {
+  margin: 0;
+  font-size: clamp(1.3rem, .95rem + 1.35vw, 1.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  max-width: 24ch;
+}
+
+.gauge {
+  flex: none;
+  position: relative;
+  width: 5.25rem;
+  height: 5.25rem;
+}
+
+.gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+.gauge circle {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.gauge-track { stroke: rgba(255, 255, 255, .28); }
+
+.gauge-value {
+  stroke: #fff;
+  stroke-dasharray: 213.6;
+  stroke-dashoffset: 213.6;
+  transition: stroke-dashoffset .7s cubic-bezier(.22, .68, .36, 1);
+}
+
+.gauge-readout {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  line-height: 1;
+}
+
+.gauge-readout strong { font-size: 1.4rem; letter-spacing: -0.02em; }
+.gauge-readout span { font-size: .6875rem; opacity: .8; }
+
+/* ---------- mismatch notice ---------- */
+
+.mismatch {
+  margin: .85rem 0 0;
+  padding: .9rem 1.1rem;
+  background: var(--card);
+  border-left: 4px solid var(--warning);
+  border-radius: var(--r-inner);
+  color: var(--ink-soft);
+  font-size: .9375rem;
+  box-shadow: var(--lift-low);
+}
+
+/* ---------- severity tiles ---------- */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: .6rem;
+  margin-top: .85rem;
+}
+
+.tile {
+  background: var(--card);
+  border-radius: var(--r-inner);
+  padding: .85rem 1rem;
+  box-shadow: var(--lift-low);
+}
+
+.tile-label {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: .8125rem;
+  color: var(--ink-soft);
+}
+
+.dot {
+  width: .5rem;
+  height: .5rem;
+  border-radius: 50%;
+  background: var(--tone, var(--ink-faint));
+  flex: none;
+}
+
+.tile strong {
+  display: block;
+  margin-top: .25rem;
+  font-size: 1.5rem;
+  letter-spacing: -0.025em;
+}
+
+/* ---------- findings ---------- */
+
+.findings-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.9rem .4rem .75rem;
+}
+
+.findings-head h3 {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.meta {
+  margin: 0;
+  font-size: .8125rem;
+  color: var(--ink-faint);
+  text-align: right;
+}
+
+.findings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.finding {
+  background: var(--card);
+  border-radius: var(--r-inner);
+  overflow: hidden;
+  border-left: 4px solid var(--tone);
+  transition: box-shadow .2s ease;
+}
+
+.finding[open] { box-shadow: var(--lift-low); }
+
+.finding summary {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  padding: .95rem 1.1rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.finding summary::-webkit-details-marker { display: none; }
+
+.finding summary:hover { background: var(--sunken); }
+
+.severity {
+  flex: none;
+  margin-top: .15rem;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--tone);
+  width: 4.4rem;
+}
+
+.reason { flex: 1; }
+
+.chevron {
+  flex: none;
+  width: .7rem;
+  height: .7rem;
+  margin-top: .4rem;
+  border-right: 2px solid var(--ink-faint);
+  border-bottom: 2px solid var(--ink-faint);
+  transform: rotate(45deg);
+  transition: transform .2s ease;
+}
+
+.finding[open] .chevron { transform: rotate(-135deg); }
+
+.evidence {
+  padding: 0 1.1rem 1.1rem;
+  border-top: 1px solid var(--hairline);
+  margin-top: -1px;
+  padding-top: 1rem;
+}
+
+.clause-where {
+  margin: 0 0 .4rem;
+  font-size: .8125rem;
+  color: var(--ink-faint);
+}
+
+.clause {
+  margin: 0;
+  padding: .85rem 1rem;
+  background: var(--sunken);
+  border-radius: 14px;
+  color: var(--ink);
+  font-size: .9375rem;
+  line-height: 1.6;
+}
+
+.clause mark {
+  background: color-mix(in srgb, var(--tone) 22%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 .15em;
+}
+
+.absence {
+  margin: 0;
+  padding: .85rem 1rem;
+  background: var(--sunken);
+  border-radius: 14px;
+  color: var(--ink-soft);
+  font-size: .9375rem;
+}
+
+.citation {
+  margin: .6rem 0 0;
+  font-size: .8125rem;
+  color: var(--ink-faint);
+}
+
+.empty {
+  margin: 1.5rem .4rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- colophon ---------- */
+
+.colophon {
+  margin-top: 2.5rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.colophon p {
+  margin: 0;
+  font-size: .8125rem;
+  color: var(--ink-faint);
+  max-width: 52ch;
+}
+
+/* ---------- accessibility floor ---------- */
+
+:focus-visible {
+  outline: 2px solid var(--carbon);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.verdict :focus-visible { outline-color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+@media (max-width: 34rem) {
+  .verdict { flex-direction: column; align-items: flex-start; }
+  .composer-foot { flex-direction: column; align-items: stretch; }
+  .analyze { width: 100%; }
+  .hint { order: 2; text-align: center; }
+  .meta { display: none; }
+}

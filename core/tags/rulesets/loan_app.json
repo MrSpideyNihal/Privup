@@ -20,6 +20,31 @@
       "hook": "core.tags.dla_directory.lookup",
       "description": "Cross-reference the lender against RBI's public Digital Lending App directory, live since 01 Nov 2025. Not implemented in this phase. The hook is called and its None result recorded on every finding so that wiring it up later changes no other module.",
       "source": "https://www.rbi.org.in"
+    },
+    "relevance": {
+      "min_signals": 3,
+      "notice": "This does not look like a lending app or a loan agreement, so these RBI lending rules may not apply well here. The findings below are still shown, but read them with that in mind.",
+      "note": "Advisory only. PrivUp never blocks a rule set from running against a target. Phrases are chosen to be specific to credit: bare 'interest' and bare 'credit' are deliberately excluded because 'legitimate interest', 'interest-based advertising' and 'credit card' appear in ordinary privacy policies and would make this notice useless.",
+      "signals": [
+        "loan",
+        "borrower",
+        "lender",
+        "lending",
+        "emi",
+        "repayment",
+        "repay",
+        "interest rate",
+        "rate of interest",
+        "creditworthiness",
+        "credit risk",
+        "credit score",
+        "credit bureau",
+        "nbfc",
+        "disburse",
+        "principal amount",
+        "foreclosure",
+        "annual percentage rate"
+      ]
     }
   },
   "rules": [
@@ -29,13 +54,13 @@
       "severity": "critical",
       "reason": "This lender says it reads your phone contacts. RBI does not permit lending apps to access your contact list.",
       "reference": "RBI Digital Lending Directions 2025, Para 12(i)",
-      "note": "Para 12(i) requires DLAs to 'desist from accessing mobile phone resources like file and media, contact list, call logs, telephony functions'. Harvesting contacts is the mechanism behind recovery-agent harassment of a borrower's family and colleagues, which is why this is critical rather than merely high. The patterns deliberately exclude 'contact details' and 'contact information': those mean the borrower's own phone number and address, which every lender legitimately collects. Matching them flagged TrueBalance for the sentence 'The e-mail address, contact details provided by you ... may be used to ... intimate you the due date of payments', which is not a phone-book grab by any reading.",
+      "note": "Para 12(i) requires DLAs to 'desist from accessing mobile phone resources like file and media, contact list, call logs, telephony functions'. Harvesting contacts is the mechanism behind recovery-agent harassment of a borrower's family and colleagues, which is why this is critical rather than merely high. The patterns deliberately exclude 'contact details' and 'contact information': those mean the borrower's own phone number and address, which every lender legitimately collects. Matching them flagged TrueBalance for the sentence 'The e-mail address, contact details provided by you ... may be used to ... intimate you the due date of payments', which is not a phone-book grab by any reading. The verb pattern allows one device word before 'contacts': 'access your device contacts' and 'read your phone contacts' are ordinary phrasings that an adjacent-words-only pattern silently missed.",
       "patterns": [
         "\\bcontacts? list\\b",
         "\\blist of (?:your )?contacts\\b",
         "\\bphone ?book\\b",
         "\\baddress book\\b",
-        "\\b(?:access|read|collect|upload|scan|fetch|retrieve|harvest|sync)\\w*\\s+(?:to\\s+)?(?:your |the |all )?contacts\\b",
+        "\\b(?:access|read|collect|upload|scan|fetch|retrieve|harvest|sync)\\w*\\s+(?:to\\s+)?(?:your |the |all )?(?:device |phone |mobile |saved |stored |personal )?contacts\\b",
         "\\bcontacts?\\s+(?:on|from|stored (?:on|in))\\s+(?:your |the )?(?:phone|device|mobile|handset)\\b"
       ],
       "negations": [

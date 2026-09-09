@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>PrivUp</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+
+<main class="shell">
+
+  <header class="masthead">
+    <div class="mark" aria-hidden="true"></div>
+    <div>
+      <h1>Know what<br>you're agreeing to.</h1>
+      <p class="standfirst">Paste a policy or a link. It is read on this machine and nothing is sent anywhere.</p>
+    </div>
+  </header>
+
+  <form class="composer" id="composer" novalidate>
+    <div class="segmented" role="radiogroup" aria-label="Rule set" id="tagset"></div>
+
+    <label class="field">
+      <span class="field-label" id="input-label">Policy text, or a link to it</span>
+      <textarea id="target" rows="6" spellcheck="false"
+                aria-describedby="input-hint"
+                placeholder="Paste the policy here, or a link such as example.com/privacy"></textarea>
+    </label>
+
+    <div class="composer-foot">
+      <p class="hint" id="input-hint">A link is fetched and followed; text is read as-is.</p>
+      <button class="analyze" type="submit" id="analyze">Analyze</button>
+    </div>
+  </form>
+
+  <section id="status" class="status" hidden aria-live="polite"></section>
+
+  <section id="result" class="result" hidden>
+
+    <article class="verdict" id="verdict">
+      <div class="verdict-copy">
+        <p class="verdict-kicker" id="verdict-kicker"></p>
+        <h2 class="verdict-line" id="verdict-line"></h2>
+      </div>
+      <div class="gauge" id="gauge">
+        <svg viewBox="0 0 84 84" aria-hidden="true">
+          <circle class="gauge-track" cx="42" cy="42" r="34"></circle>
+          <circle class="gauge-value" id="gauge-value" cx="42" cy="42" r="34"></circle>
+        </svg>
+        <div class="gauge-readout">
+          <strong id="risk-score">0</strong>
+          <span>risk</span>
+        </div>
+      </div>
+    </article>
+
+    <p class="mismatch" id="mismatch" hidden></p>
+
+    <div class="tiles" id="tiles"></div>
+
+    <div class="findings-head">
+      <h3 id="findings-title">What it found</h3>
+      <p class="meta" id="meta"></p>
+    </div>
+
+    <ol class="findings" id="findings"></ol>
+
+    <p class="empty" id="empty" hidden>Nothing in this document matched a red flag.</p>
+  </section>
+
+  <footer class="colophon">
+    <p>Rule-based, on-device. A finding means read the clause, not that a company is breaking the law.</p>
+  </footer>
+
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>

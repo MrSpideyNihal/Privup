@@ -19,3 +19,6 @@ Thumbs.db
 
 # Scratch space for pulling real policy pages when building fixtures
 scratch_fixtures/
+
+# Throwaway scripts used while building
+scratch/

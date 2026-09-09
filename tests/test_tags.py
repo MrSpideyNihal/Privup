@@ -41,6 +41,22 @@ def minimal_set(**overrides):
 	return data
 
 
+@pytest.fixture
+def clean_registry():
+	"""Restore the registry so a test's throwaway rule set does not leak.
+
+	Registrations live in module-global state for the life of the process, so
+	without this a rule set registered here shows up in the UI's /api/tags
+	response several test files later.
+	"""
+	from core.tags import registry as registry_module
+
+	saved = dict(registry_module._REGISTERED)
+	yield
+	registry_module._REGISTERED.clear()
+	registry_module._REGISTERED.update(saved)
+
+
 class TestDiscovery:
 	def test_both_shipped_rule_sets_are_found(self):
 		assert set(available_tag_sets()) >= {"generic", "loan_app"}
@@ -60,9 +76,16 @@ class TestDiscovery:
 			get_tag_set("nope")
 		assert "loan_app" in str(caught.value)
 
-	def test_a_rule_set_can_be_registered_from_python(self):
+	def test_a_rule_set_can_be_registered_from_python(self, clean_registry):
 		register_tag_set(minimal_set(name="registered_test"))
 		assert get_tag_set("registered_test").name == "registered_test"
+		assert "registered_test" in available_tag_sets()
+
+	def test_a_registration_does_not_outlive_its_test(self, clean_registry):
+		"""Guards the fixture above: without cleanup, a throwaway rule set
+		leaks into every later test in the process, including the UI's
+		rule-set dropdown."""
+		assert "registered_test" not in available_tag_sets()
 
 
 class TestValidation:
