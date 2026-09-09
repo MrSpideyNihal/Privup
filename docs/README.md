@@ -457,3 +457,89 @@ reward writing more of them. Document-scope rules are excluded, since every
 absence rule fires when a single clause is the whole document. Lending clauses
 are scored under both rule sets, because `generic` covers any service and
 `loan_app` supplements it.
+
+## The browser extension
+
+`extension/` is a Manifest V3 extension containing a JavaScript port of the
+pipeline. `core/` is pure Python and cannot run in a browser, and Pyodide
+would mean shipping a multi-megabyte WASM runtime into every page.
+
+```
+extension/src/core/     mirrors core/ module for module
+extension/src/dom.js    reads clauses from the live DOM, spots consent banners
+extension/src/content.js  the trigger and the glue
+extension/src/panel.js  the verdict panel, in a shadow root
+```
+
+### How drift is prevented
+
+Two implementations of the same logic drift. Here that would mean two verdicts
+for the same policy, differing by platform, with no way to tell which is
+right. Two mechanisms stop it, and neither is a convention anyone has to
+remember.
+
+**Rule sets stay single-source.** `core/tags/rulesets/*.json` is the only
+place a rule is defined. The extension gets a generated mirror:
+
+```bash
+python tools/sync_rulesets.py           # regenerate
+python tools/sync_rulesets.py --check   # fail if stale (runs in the test suite)
+```
+
+Adding a rule is still one JSON file, and it takes effect on both platforms.
+
+**A parity harness.** `tests/test_js_parity.py` runs every fixture through
+both implementations under both rule sets and compares the resulting
+`Verdict` field for field. A JavaScript change that alters a verdict fails the
+Python test suite. **When the two disagree, the Python is right.**
+
+The harness has already earned its keep twice. Python's `f"c{-1:04d}"` gives
+`c-001` where a naive `padStart` gives `c00-1`, so absence findings had
+different clause ids. And the JS parser did not recognise HTML comments, which
+Python's `html.parser` discards: the fixture's 145-character provenance
+comment leaked in as body text and shifted every clause offset after it by
+exactly 145. Offsets are what a front end uses to highlight a clause, so
+neither was cosmetic and neither would have been noticed by hand.
+
+### The trigger
+
+A `MutationObserver`, because consent banners are not in the initial HTML.
+None of the sites checked (BBC, Guardian, Le Monde, Spiegel, CNET) ship any
+banner markup with the page; a consent platform injects it milliseconds to
+seconds later, which is the moment PrivUp needs to speak. Mutations are
+debounced by 350 ms so a banner is read once it is finished rather than
+half-built.
+
+Detection requires all three of: banner wording or a known platform name, an
+overlay position, and something to click. That is stricter than it first
+looks, and deliberately. An earlier version matched any element mentioning
+"Cookie Policy", which is footer link text on every page of a site, so the
+panel appeared on top of the very privacy policy a user had opened to read,
+and on `<body>` itself. A panel that cries wolf is worse than no panel.
+
+### Privacy
+
+The content script already has the page text, so nothing is fetched to
+analyze what is on screen. The manifest requests no host permissions at all,
+which a test enforces. The one network request the extension can make is
+fetching a linked policy, and only when the user clicks the button asking for
+it.
+
+The panel renders into a shadow root: a consent banner is exactly the kind of
+element that ships aggressive `!important` CSS, so the page cannot restyle the
+verdict and PrivUp cannot restyle the page.
+
+### Running it
+
+Load `extension/` as an unpacked extension in Chrome, or exercise the content
+script without installing anything:
+
+```bash
+python -m http.server 8421
+# then open http://localhost:8421/extension/dev/harness.html
+```
+
+The harness injects banners after load, the way real platforms do, so the
+`MutationObserver` path is genuinely exercised. Banner markup there mirrors
+the DOM shape the real platforms produce, because JS-injected banners cannot
+be fetched and captured.
