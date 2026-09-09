@@ -52,7 +52,23 @@ class _Handler(BaseHTTPRequestHandler):
 		self.wfile.write(body)
 
 	def do_GET(self):
-		if self.path == "/privacy-policy":
+		if self.path == "/picky":
+			# Mimics whatsapp.com, which answers 400 to a bare Chrome user
+			# agent and 200 to a request without one. Only the second attempt
+			# should get through.
+			if "Chrome" in (self.headers.get("User-Agent") or ""):
+				self._send(400, b"bad request", content_type="text/plain")
+			else:
+				self._send(200, POLICY_BODY.encode("utf-8"))
+		elif self.path == "/needs-a-browser":
+			# Mimics signal.org, which refuses a request with no user agent.
+			if "Chrome" in (self.headers.get("User-Agent") or ""):
+				self._send(200, POLICY_BODY.encode("utf-8"))
+			else:
+				self._send(403, b"forbidden", content_type="text/plain")
+		elif self.path == "/always-400":
+			self._send(400, b"bad request", content_type="text/plain")
+		elif self.path == "/privacy-policy":
 			self._send(200, POLICY_BODY.encode("utf-8"))
 		elif self.path == "/":
 			self._send(200, HOMEPAGE_BODY.encode("utf-8"))
@@ -115,6 +131,43 @@ class TestFetching:
 
 	def test_decodes_a_non_utf8_page(self, driver, server):
 		assert "\xa3" in driver.fetch(f"{server}/latin1").raw_text
+
+
+class TestHostsThatDislikeTheRequest:
+	"""Neither header set works everywhere, so the driver tries both.
+
+	Found by a user pasting a WhatsApp policy URL and getting HTTP 400.
+	Meta's edge rejects a Chrome user agent that arrives without the
+	client-hint and fetch-metadata headers a real Chrome always sends, which
+	is a confusing way to be told the request looks forged.
+	"""
+
+	def test_retries_without_the_browser_user_agent(self, driver, server):
+		result = driver.fetch(f"{server}/picky")
+		assert "personal data" in result.raw_text
+
+	def test_still_works_where_a_browser_agent_is_required(self, driver, server):
+		"""signal.org refuses a request with no user agent, so the fallback
+		must be a fallback and not a replacement."""
+		result = driver.fetch(f"{server}/needs-a-browser")
+		assert "personal data" in result.raw_text
+
+	def test_reports_the_original_status_when_both_attempts_fail(self, driver, server):
+		with pytest.raises(DriverError, match="400"):
+			driver.fetch(f"{server}/always-400")
+
+	def test_does_not_retry_a_404(self, driver, server):
+		"""Retrying "there is nothing here" just costs another round trip."""
+		with pytest.raises(DriverError, match="404"):
+			driver.fetch(f"{server}/missing")
+
+	def test_the_browser_headers_are_internally_consistent(self):
+		"""A Chrome claim without these is what triggered the 400."""
+		from core.scraper.fetcher import _HEADERS
+
+		assert "Chrome" in _HEADERS["User-Agent"]
+		for header in ["Sec-Fetch-Mode", "Sec-Fetch-Dest", "sec-ch-ua", "Upgrade-Insecure-Requests"]:
+			assert header in _HEADERS, header
 
 
 class TestPolicyLinkFollowing:

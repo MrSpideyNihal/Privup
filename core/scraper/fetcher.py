@@ -30,19 +30,46 @@ MAX_BYTES = 5 * 1024 * 1024
 
 # Several policy hosts return 403 to an unrecognised agent. Identifying
 # honestly as PrivUp gets refused by more of them than not, so this presents
-# as a browser while still naming the project in a comment nobody reads. If a
-# site owner wants to block this, the source is public.
+# as a browser. If a site owner wants to block this, the source is public.
 _USER_AGENT = (
 	"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
 	"Chrome/120.0 Safari/537.36"
 )
 
+# Claiming to be Chrome is not enough on its own: some edges check that the
+# claim is internally consistent and reject a Chrome user agent that arrives
+# without the client-hint and fetch-metadata headers a real Chrome always
+# sends. whatsapp.com answers 400 Bad Request to a bare Chrome user agent and
+# 200 to no user agent at all, which is a confusing way to be told the request
+# looks forged. Sending the full consistent set fixes it.
 _HEADERS = {
 	"User-Agent": _USER_AGENT,
-	"Accept": "text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.5",
+	"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 	"Accept-Language": "en-US,en;q=0.9",
 	"Accept-Encoding": "gzip, deflate",
+	"Upgrade-Insecure-Requests": "1",
+	"Sec-Fetch-Dest": "document",
+	"Sec-Fetch-Mode": "navigate",
+	"Sec-Fetch-Site": "none",
+	"Sec-Fetch-User": "?1",
+	"sec-ch-ua": '"Chromium";v="120", "Not:A-Brand";v="24"',
+	"sec-ch-ua-mobile": "?0",
+	"sec-ch-ua-platform": '"Windows"',
 }
+
+# Stripped-back request used as a second attempt. Some hosts dislike the
+# browser impersonation; others (signal.org) refuse a request with no user
+# agent. Neither header set works everywhere, so try the browser-shaped one
+# first and fall back rather than pick a side.
+_FALLBACK_HEADERS = {
+	"Accept": "text/html,*/*;q=0.8",
+	"Accept-Encoding": "gzip, deflate",
+}
+
+# Statuses that mean "we did not like the look of this request" rather than
+# "there is nothing here". Only these are worth a second attempt: retrying a
+# 404 just costs the user another round trip.
+_RETRY_STATUSES = frozenset({400, 401, 403, 406, 409, 421, 429})
 
 _ALLOWED_SCHEMES = {"http", "https"}
 
@@ -101,23 +128,42 @@ def _decompress(body: bytes, encoding: str) -> bytes:
 	return body
 
 
+def _attempt(target: str, headers: dict[str, str], timeout: float):
+	"""One GET. Returns the pieces we need, or raises."""
+	with urlopen(Request(target, headers=headers), timeout=timeout) as response:
+		return (
+			response.geturl(),
+			getattr(response, "status", 200) or 200,
+			response.headers,
+			response.read(MAX_BYTES + 1),
+		)
+
+
 def fetch_url(url: str, timeout: float = DEFAULT_TIMEOUT) -> Response:
 	"""GET ``url``, following redirects, and return the raw response.
 
-	Raises ``DriverError`` for anything that means "no document here":
-	a bad scheme, a network failure, an HTTP error, a binary payload.
+	Tries a browser-shaped request first and a stripped-back one second, since
+	some hosts reject each. Raises ``DriverError`` for anything that means "no
+	document here": a bad scheme, a network failure, an HTTP error, a binary
+	payload.
 	"""
 	target = normalize_url(url)
-	request = Request(target, headers=_HEADERS)
 
 	try:
-		with urlopen(request, timeout=timeout) as response:
-			final_url = response.geturl()
-			status = getattr(response, "status", 200) or 200
-			headers = response.headers
-			body = response.read(MAX_BYTES + 1)
+		final_url, status, headers, body = _attempt(target, _HEADERS, timeout)
 	except HTTPError as exc:
-		raise DriverError(f"{target} returned HTTP {exc.code} ({exc.reason})") from None
+		if exc.code not in _RETRY_STATUSES:
+			raise DriverError(f"{target} returned HTTP {exc.code} ({exc.reason})") from None
+		try:
+			final_url, status, headers, body = _attempt(target, _FALLBACK_HEADERS, timeout)
+		except HTTPError as retry_exc:
+			# Report the original refusal. It is the one that describes how
+			# the host normally answers.
+			raise DriverError(
+				f"{target} returned HTTP {exc.code} ({exc.reason})"
+			) from None
+		except (URLError, TimeoutError, OSError):
+			raise DriverError(f"{target} returned HTTP {exc.code} ({exc.reason})") from None
 	except URLError as exc:
 		raise DriverError(f"could not reach {target}: {exc.reason}") from None
 	except TimeoutError:
