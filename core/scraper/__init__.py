@@ -17,6 +17,7 @@ from core.scraper.registry import (
 
 # Importing these modules runs their @register_driver decorators.
 from core.scraper import raw_text_driver as _raw_text_driver  # noqa: F401
+from core.scraper import url_driver as _url_driver  # noqa: F401
 
 load_plugin_drivers()
 
