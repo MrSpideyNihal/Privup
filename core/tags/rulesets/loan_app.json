@@ -71,7 +71,8 @@
         "\\bno longer\\b",
         "\\bwithout accessing\\b",
         "\\bnot (?:access|collect|read|store|retain|seek)\\b",
-        "\\brefrain from\\b"
+        "\\brefrain from\\b",
+        "['’ʼ]t\\b"
       ],
       "hedges": [
         "\\bideally\\b",
@@ -107,7 +108,8 @@
         "\\bdesist from\\b",
         "\\bnever\\b",
         "\\bnot (?:access|collect|read|store|retain|seek)\\b",
-        "\\brefrain from\\b"
+        "\\brefrain from\\b",
+        "['’ʼ]t\\b"
       ],
       "hedges": [
         "\\bideally\\b",
@@ -149,7 +151,8 @@
         "\\bOTP\\b",
         "\\bone[- ]time password\\b",
         "\\bsend you\\b",
-        "\\bsend(?:ing)? (?:you |an )?(?:SMS|text)\\b"
+        "\\bsend(?:ing)? (?:you |an )?(?:SMS|text)\\b",
+        "['’ʼ]t\\b"
       ],
       "hedges": [
         "\\bone[- ]?time\\b",
@@ -170,13 +173,14 @@
       "severity": "critical",
       "reason": "This lender says it reads the files and photos on your phone. RBI does not permit lending apps to access your storage.",
       "reference": "RBI Digital Lending Directions 2025, Para 12(i)",
-      "note": "'file and media' is the first item named in Para 12(i).",
+      "note": "'file and media' is the first item named in Para 12(i). Bare 'storage' was removed: it fired on 'collection, usage, storage, sharing', on a security-measures sentence, and inside a definition of the word 'Processing'. Phone storage access needs a device word next to it.",
       "patterns": [
         "\\bfiles? and media\\b",
         "\\bmedia files?\\b",
         "\\bphoto (?:gallery|library)\\b",
         "\\bgallery\\b",
-        "\\b(?:external |device )?storage\\b",
+        "\\b(?:external|device|phone|internal|on-device|local) storage\\b",
+        "\\bstorage permission\\b",
         "\\bimages? (?:stored|on your (?:device|phone))\\b"
       ],
       "requires": [
@@ -191,7 +195,8 @@
         "\\brefrain from\\b",
         "\\bcloud storage\\b",
         "\\bdata storage\\b",
-        "\\bstorage and security\\b"
+        "\\bstorage and security\\b",
+        "['’ʼ]t\\b"
       ],
       "hedges": [
         "\\bideally\\b",
@@ -221,7 +226,8 @@
         "\\b(?:do|does|shall|will|would|can) ?n(?:o|')t\\b",
         "\\b(?:do|does|shall|will|would) not\\b",
         "\\bnever\\b",
-        "\\bnot (?:access|collect|read|store|retain)\\b"
+        "\\bnot (?:access|collect|read|store|retain)\\b",
+        "['’ʼ]t\\b"
       ],
       "metadata": {
         "android_permission": "QUERY_ALL_PACKAGES"
@@ -233,7 +239,7 @@
       "severity": "medium",
       "reason": "This lender takes camera, microphone or location access without saying it is one-time and only for KYC. RBI allows these only on that basis.",
       "reference": "RBI Digital Lending Directions 2025, Para 12(i)",
-      "note": "Para 12(i) permits 'a one-time access [...] for camera, microphone, location or any other facility necessary for the purpose of on-boarding/ KYC requirements only, with the explicit consent of the borrower'. So these permissions are not themselves a violation; taking them open-endedly is. The negations here are the qualifiers that make the access lawful, which is why they read as positives. The one-time negation allows the unhyphenated spelling: Kissht's live policy writes 'onetime access', and requiring a hyphen made the qualifier invisible. The patterns name the device facility explicitly rather than pairing a verb with a nearby noun. A loose gap pattern matched 'Kissht reserves the right to modify the User Interface, appearance, contents, organization, location and accessibility of the Website', where 'location' means where things sit on a page and 'accessibility' merely begins with 'access'.",
+      "note": "Para 12(i) permits 'a one-time access [...] for camera, microphone, location or any other facility necessary for the purpose of on-boarding/ KYC requirements only, with the explicit consent of the borrower'. So these permissions are not themselves a violation; taking them open-endedly is. The negations here are the qualifiers that make the access lawful, which is why they read as positives. The one-time negation allows the unhyphenated spelling: Kissht's live policy writes 'onetime access', and requiring a hyphen made the qualifier invisible. The patterns name the device facility explicitly rather than pairing a verb with a nearby noun. A loose gap pattern matched 'Kissht reserves the right to modify the User Interface, appearance, contents, organization, location and accessibility of the Website', where 'location' means where things sit on a page and 'accessibility' merely begins with 'access'. 'For example, you can modify permissions on your Android device for access to Camera' is an instruction for protecting yourself and was being reported as a risk.",
       "patterns": [
         "\\b(?:camera|microphone|geo-?location|GPS)\\b",
         "\\blocation (?:data|permission|access|services?|tracking)\\b"
@@ -245,7 +251,11 @@
         "\\b(?:do|does|shall|will|would) not\\b",
         "\\bnever\\b",
         "\\bscan the QR\\b",
-        "\\bopen your phone camera\\b"
+        "\\bopen your phone camera\\b",
+        "['’ʼ]t\\b",
+        "\\byou (?:can|may|are able to)\\b[^.]{0,40}\\b(?:modify|change|revoke|disable|turn off|manage|control)\\b",
+        "\\bmodify permissions\\b",
+        "\\bin your (?:device |phone )?settings\\b"
       ],
       "metadata": {
         "android_permission": "CAMERA|RECORD_AUDIO|ACCESS_FINE_LOCATION"
@@ -322,7 +332,8 @@
         "\\d+(?:\\.\\d+)?\\s*%|(?:Rs\\.?|INR|₹)\\s*[\\d,]+"
       ],
       "negations": [
-        "\\d+(?:\\.\\d+)?\\s*%\\s*of (?:the )?processing fees?\\b"
+        "\\d+(?:\\.\\d+)?\\s*%\\s*of (?:the )?processing fees?\\b",
+        "['’ʼ]t\\b"
       ],
       "numeric": {
         "kind": "percent_any",
@@ -349,7 +360,8 @@
         "\\bfree of (?:charge|cost)\\b",
         "\\bnil\\b",
         "\\bwithout (?:any )?(?:charge|fee|penalt)\\w*\\b",
-        "\\bshall not apply\\b"
+        "\\bshall not apply\\b",
+        "['’ʼ]t\\b"
       ]
     },
     {
@@ -366,7 +378,8 @@
       ],
       "negations": [
         "\\bno (?:foreclosure|prepayment) (?:charge|fee|penalt)\\w*\\b",
-        "\\bnil\\b"
+        "\\bnil\\b",
+        "['’ʼ]t\\b"
       ]
     },
     {
@@ -402,7 +415,8 @@
       ],
       "negations": [
         "\\b(?:do|does|shall|will|would) not\\b",
-        "\\bnever\\b"
+        "\\bnever\\b",
+        "['’ʼ]t\\b"
       ]
     },
     {
@@ -438,6 +452,23 @@
         "\\blending partner\\b",
         "\\bour lending partners?\\b",
         "\\bregistered with the Reserve Bank\\b"
+      ]
+    },
+    {
+      "id": "rbi.consent.bundled",
+      "category": "consent",
+      "severity": "high",
+      "reason": "Just using this app is treated as your agreement. RBI requires a lender to ask you explicitly.",
+      "reference": "RBI Digital Lending Directions 2025, Para 12(i)",
+      "note": "Para 12(i) requires collection to be 'with prior and explicit consent of the borrower having audit trail'. Consent inferred from opening the app is neither prior nor explicit. Kissht's live policy reads 'By mere use of the Platform(s), you expressly and unconditionally agree'.",
+      "patterns": [
+        "\\bby (?:mere )?(?:use|using|accessing|downloading|installing)\\b[^.]{0,90}\\b(?:you (?:agree|consent|accept|acknowledge|indicate)|signif\\w+ your consent)\\b",
+        "\\bexpressly and (?:unconditionally|irrevocably) (?:agree|consent)\\b",
+        "\\bdeemed to have (?:agreed|consented|accepted)\\b"
+      ],
+      "negations": [
+        "\\bopt[- ]?in\\b",
+        "['’ʼ]t\\b"
       ]
     }
   ]

@@ -1,0 +1,851 @@
+{
+ "meta": {
+  "review_status": "UNREVIEWED BOOTSTRAP - NOT AUTHORITATIVE",
+  "warning": "These labels were produced while building the classifier they are used to evaluate. Ground truth written by the system under test is circular, so treat every number derived from this file as provisional until a human has read the clauses and corrected the labels. Disagreements are expected and are the point: correct the label, do not tune the rule to match it.",
+  "method": "Clauses were sampled from live policy pages, stratified so that roughly a third were already flagged by the rule matcher and the rest were not. Including clauses the rules miss is deliberate: a set built only from what we already catch measures nothing.",
+  "vocabulary": "Categories are those defined by the shipped rule sets. A clause about something no rule set has a category for is left unlabelled rather than invented, so the metric measures classification rather than coverage.",
+  "scope": "Clause-level only. Document-scope rules such as 'this policy never mentions opting out' are a different mechanism and are excluded."
+ },
+ "clauses": [
+  {
+   "id": "c001",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "We are not responsible if someone else accesses your account through Registration Information they have obtained from you or through a violation by you of this Privacy Policy or the Terms of this policy.",
+   "labels": []
+  },
+  {
+   "id": "c002",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "The platform collects, accesses, stores financial/ transaction SMS to assess the income, track and analyse financial expenses and determine the creditworthiness once during the loan on-boarding journey.",
+   "labels": [
+    "disallowed_permission"
+   ]
+  },
+  {
+   "id": "c003",
+   "source": "https://truebalance.io/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Prior approval of the users would be required, in case of change in the purposes.",
+   "labels": []
+  },
+  {
+   "id": "c004",
+   "source": "https://www.kissht.com/terms-of-service",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Kissht makes no representations about the timeliness, of the services contained on the Kissht web site for any purpose.",
+   "labels": []
+  },
+  {
+   "id": "c005",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "We may email or send push notifications to you from time to time about our latest offerings and updates based on your explicit consent.",
+   "labels": []
+  },
+  {
+   "id": "c006",
+   "source": "https://truebalance.io/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "By using the website/mobile application, you indicate that you understand, agree and consent to this Privacy Policy.",
+   "labels": [
+    "consent"
+   ]
+  },
+  {
+   "id": "c007",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We store information for as long as necessary for the purposes identified in this Privacy Policy, including to provide our Services or for other legitimate purposes, such as complying with legal obligations, enforcing and preventing violations of our Terms, or protecting or defending our rights, property, and users.",
+   "labels": [
+    "data_retention"
+   ]
+  },
+  {
+   "id": "c008",
+   "source": "https://openai.com/policies/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "For information about how we collect and use training information to develop our language models that power ChatGPT and other Services, and your choices with respect to that information, please see this policy as well as this help center article⁠(opens in a new window).",
+   "labels": [
+    "model_training"
+   ]
+  },
+  {
+   "id": "c009",
+   "source": "https://www.kissht.com/terms-of-service",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Customers authorize the Financer to make any enquiries with any other finance company / bank / registered credit bureau regarding customer's credit history with them.",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c010",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "These statistics contain no information that can distinctly identify you.",
+   "labels": []
+  },
+  {
+   "id": "c011",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "To verify your creditworthiness and complete the KYC formalities, we request you to enter few government-issued ID numbers such as PAN Number, Aadhaar details, or Virtual ID (VID) number.",
+   "labels": []
+  },
+  {
+   "id": "c012",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We only provide aggregated reports to advertisers that don’t reveal information about individual people.",
+   "labels": []
+  },
+  {
+   "id": "c013",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Notification procedures, where relevant authorities and affected parties will be informed as per the legal requirements, CERT-In & RBI guidelines.",
+   "labels": []
+  },
+  {
+   "id": "c015",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We require each of these users to have lawful rights to collect, use, and share your information before providing any information to us.",
+   "labels": []
+  },
+  {
+   "id": "c016",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "You can add other information to your account, such as a profile picture and \"about\" information.",
+   "labels": []
+  },
+  {
+   "id": "c017",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "For example, we collect information about views and interactions with ads so we can provide aggregated reports to advertisers, like telling them whether we served their ad on a page and whether the ad was likely seen by a viewer.",
+   "labels": [
+    "third_party_sharing",
+    "tracking_profiling"
+   ]
+  },
+  {
+   "id": "c018",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "For example, you can share videos on YouTube publicly or you can decide to keep your videos private.",
+   "labels": []
+  },
+  {
+   "id": "c019",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Further, the data stored on our server shall be utilised only for the purpose and to the extent stated in the policy.",
+   "labels": []
+  },
+  {
+   "id": "c020",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "In our updated Terms of Service and Privacy Policy you’ll find:",
+   "labels": []
+  },
+  {
+   "id": "c021",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "You may opt out of receiving such promotional emails from us by writing to us.",
+   "labels": []
+  },
+  {
+   "id": "c022",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "For example, a unique identifier such as the Advertising ID is used to provide relevant advertising on Android devices, and can be managed in your device’s settings.",
+   "labels": [
+    "tracking_profiling"
+   ]
+  },
+  {
+   "id": "c023",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Please also read WhatsApp’s Terms of Service (\"Terms\"), which describe the terms under which you use and we provide our Services.",
+   "labels": []
+  },
+  {
+   "id": "c024",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "However, usage of such third-party services is subject to their privacy policies and not within our control.",
+   "labels": []
+  },
+  {
+   "id": "c025",
+   "source": "https://truebalance.io/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "To do this, BH has adopted measures like internal reviews of the data collection, storage and processing practices and security measures, including appropriate encryption and physical security measures to guard against unauthorized system access where your personal information is stored.",
+   "labels": []
+  },
+  {
+   "id": "c026",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "This data Privacy Policy (\"Policy\") sets forth the modes of collection, use, transfer, disclosure and sharing minimal amount of personal data or information (\"personal Information\") gathered through any website, digital lending application, mobile application, platform or otherwise used by us.",
+   "labels": []
+  },
+  {
+   "id": "c027",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Changing Your Mobile Phone Number, Profile Name And Picture, And “About” Information.",
+   "labels": []
+  },
+  {
+   "id": "c028",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "You may also see personalized ads based on information from the advertiser.",
+   "labels": [
+    "tracking_profiling"
+   ]
+  },
+  {
+   "id": "c029",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We don’t show you personalized ads based on sensitive categories, such as race, religion, sexual orientation, or health.",
+   "labels": []
+  },
+  {
+   "id": "c030",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "We collect session data because it helps us analyze things such as the items visitors are likely to click on most, the manner in which visitors click preferences on our Website, number of visitors surfing to various pages on the Website, time spent by the visitors on our Website and frequency of their visit.",
+   "labels": [
+    "tracking_profiling"
+   ]
+  },
+  {
+   "id": "c031",
+   "source": "https://truebalance.io/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "For business transfers: We may share or transfer your personal information in connection with, or during negotiations of, any merger, sale of Company assets, financing, or acquisition of all or a portion of Our business to another company..",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c032",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "For example, we may collect information that’s publicly available online or from other public sources to help train Google’s AI models and build products and features like Google Translate, Gemini Apps, and Cloud AI capabilities.",
+   "labels": [
+    "model_training"
+   ]
+  },
+  {
+   "id": "c033",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "You can visit your Google Account to find and manage activity information that’s saved in your history.",
+   "labels": []
+  },
+  {
+   "id": "c034",
+   "source": "https://openai.com/policies/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Other Information You Provide: We collect other information that you provide to us, such as when you participate in our events or surveys, or when you provide us or a vendor operating on our behalf with information to establish your identity or age (collectively, “Other Information You Provide”).",
+   "labels": []
+  },
+  {
+   "id": "c035",
+   "source": "https://signal.org/legal/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Our Services do not provide access to emergency service providers like the police, fire department, hospitals, or other public safety organizations.",
+   "labels": []
+  },
+  {
+   "id": "c036",
+   "source": "https://openai.com/policies/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Once you choose to delete Personal Data, we will remove it from our systems within 30 days unless we need to retain it for longer as described below, or it has already been de-identified and disassociated from your account when you allow us to use your Content to improve our models⁠(opens in a new window).",
+   "labels": [
+    "data_retention",
+    "model_training"
+   ]
+  },
+  {
+   "id": "c037",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We may also use cookies to understand which of our Help Center articles are most popular and to show you relevant content related to our Services.",
+   "labels": [
+    "tracking_profiling"
+   ]
+  },
+  {
+   "id": "c038",
+   "source": "https://signal.org/legal/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Our Services may allow you to access, use, or interact with third-party websites, apps, content, and other products and services.",
+   "labels": []
+  },
+  {
+   "id": "c039",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "For example, if you add a credit card or other payment method to your Google Account, you can use it to buy things across our services, like apps in the Play Store.",
+   "labels": []
+  },
+  {
+   "id": "c040",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Businesses you interact with using our Services may provide us with information about their interactions with you.",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c041",
+   "source": "https://www.kissht.com/terms-of-service",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "It is imperative to note that Kissht has taken required efforts to ensure that the information/ statement/ certificate provided on Kissht's Web Site is reasonably accurate, however, Kissht does not warrant its accuracy, completeness or suitability, correctness, adequacy validity, whatsoever for any purpose.",
+   "labels": []
+  },
+  {
+   "id": "c042",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We don’t share information that personally identifies you with advertisers, such as your name or email, unless you ask us to.",
+   "labels": []
+  },
+  {
+   "id": "c043",
+   "source": "https://openai.com/policies/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "You can easily choose whether your Content can be used to improve and train our models⁠(opens in a new window).",
+   "labels": [
+    "model_training"
+   ]
+  },
+  {
+   "id": "c044",
+   "source": "https://openai.com/policies/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Information we retain until you delete it: Some of our Services allow you to delete Personal Data stored in your account.",
+   "labels": [
+    "data_retention"
+   ]
+  },
+  {
+   "id": "c045",
+   "source": "https://openai.com/policies/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We also share limited information with select marketing partners who are not service providers in order to promote our products and services on third-party properties and help us assess the effectiveness of those efforts.",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c046",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Respect for the privacy and security of data you store with Google underpins our approach to complying with these legal requests.",
+   "labels": []
+  },
+  {
+   "id": "c047",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "For example, we use cookies to provide our Services for web and desktop and other web-based services.",
+   "labels": []
+  },
+  {
+   "id": "c048",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Users can control the use of cookies at the individual browser level.",
+   "labels": []
+  },
+  {
+   "id": "c049",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "For example, if you email us with a question, we will use your email address, name, nature of the question, etc. to respond to your question.",
+   "labels": []
+  },
+  {
+   "id": "c050",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We collect device and connection-specific information when you install, access, or use our Services.",
+   "labels": []
+  },
+  {
+   "id": "c051",
+   "source": "https://openai.com/policies/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We also aggregate or de-identify Personal Data so that it no longer identifies you and share it with third parties for the purposes described above, such as to help improve our Services.",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c052",
+   "source": "https://openai.com/policies/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "To communicate with you, including to respond to your questions, and send you information about our Services and events, for example about changes or improvements to the Services;",
+   "labels": []
+  },
+  {
+   "id": "c053",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "If you’re a member of an organization that uses Google Workspace or Google Cloud Platform, learn how these services collect and use your personal information in the Google Cloud Privacy Notice.",
+   "labels": []
+  },
+  {
+   "id": "c055",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "We employ industry standard security measures to protect your personal information during online sessions, including during transmission and storage and to protect https://paywithring.com/https://kissht.com,https://conexo.in/ accounts and systems from unauthorized access.",
+   "labels": []
+  },
+  {
+   "id": "c056",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Our Platform collects and monitors only financial/ transaction SMS for limited purpose of assessing your creditworthiness in connection with your loan application, on behalf of our financial partners.",
+   "labels": [
+    "disallowed_permission"
+   ]
+  },
+  {
+   "id": "c057",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Signed-out search customization: Choose whether your search activity is used to offer you more relevant results and recommendations.",
+   "labels": []
+  },
+  {
+   "id": "c058",
+   "source": "https://openai.com/policies/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "At OpenAI, our mission is to ensure that artificial general intelligence benefits everyone.",
+   "labels": []
+  },
+  {
+   "id": "c059",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "\"Processing\" in relation to personal data or information means an automated operation or set of operations performed on personal data, and may include operations such as collection, recording, organization, structuring, storage, adaptation, alteration, retrieval, use, alignment or combination, indexing, sharing, disclosure by transmission, dissemination or otherwise making available, restriction, erasure or destruction;",
+   "labels": []
+  },
+  {
+   "id": "c060",
+   "source": "https://www.kissht.com/terms-of-service",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "In the case of loan cancellation, the applicable pro-rata Annualised Percentage Rate on any outstanding loan amount will have to be borne by Customers and understand that Processing Fee is non-refundable charges and would not be waived/ refunded in case of loan cancellation or where the loan has not been disbursed.",
+   "labels": [
+    "cost_of_credit"
+   ]
+  },
+  {
+   "id": "c061",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "We may disclose your information, without prior notice, if we are under a duty to do so in order to comply with any legal obligation or an order from the government and/or a statutory authority, or in order to enforce or apply.",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c062",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "If you choose to apply for these separate products or services, disclose information to the providers, or grant them permission to collect information about you, then their use of your information is governed by their privacy policies.",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c063",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "The information we collect includes unique identifiers, browser type and settings, device type and settings, operating system, mobile network information including carrier name and phone number, and application version number.",
+   "labels": [
+    "tracking_profiling"
+   ]
+  },
+  {
+   "id": "c064",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "These companies may provide us with information about you in certain circumstances; for example, app stores may provide us with reports to help us diagnose and fix service issues.",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c065",
+   "source": "https://www.kissht.com/terms-of-service",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Kissht does not assume any responsibility/liability for any obligations or offers given on such sites and is neither responsible for the contents, policies and practices of such sites as well as Kissht is not liable for any loss, damage or expense arising from use of such sites.",
+   "labels": []
+  },
+  {
+   "id": "c066",
+   "source": "https://truebalance.io/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "In this regard, you expressly and irrevocably authorize True Balance/ its partners / affiliates to collect, use, verify and authenticate your personal identity information / KYC in any manner as may be deemed fit.",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c067",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Use the User information in order to comply with country laws and regulations;",
+   "labels": []
+  },
+  {
+   "id": "c068",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Our Privacy Policy (\"Privacy Policy\") helps explain our data practices, including the information we process to provide our Services.",
+   "labels": []
+  },
+  {
+   "id": "c069",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "For example, you can modify permissions on your Android device for access to Camera or Audio permissions.",
+   "labels": []
+  },
+  {
+   "id": "c071",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We use automated systems that analyze your content to provide you with things like tailored search results, personalized ads, or other features tailored to how you use our services.",
+   "labels": [
+    "tracking_profiling"
+   ]
+  },
+  {
+   "id": "c072",
+   "source": "https://truebalance.io/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "By mere use of the Platform(s), you expressly and unconditionally agree to the terms and conditions of this Privacy Policy and consent to the collection, usage, storage, sharing and handling of the personal information/ sensitive personal data submitted by you in accordance with the terms contained herein.",
+   "labels": [
+    "consent"
+   ]
+  },
+  {
+   "id": "c073",
+   "source": "https://openai.com/policies/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We at OpenAI (together with our affiliates, “OpenAI”, “we”, “our” or “us”) are committed to respecting your privacy and are strongly committed to keeping secure any information we obtain from you or about you.",
+   "labels": []
+  },
+  {
+   "id": "c074",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "We will disclose the information to our third party technology and credit partners to perform credit checks and credit analysis like Credit Bureaus or third party data source providers;",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c075",
+   "source": "https://signal.org/legal/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "If you contact Signal User Support, any personal data you may share with us is kept only for the purposes of researching the issue and contacting you about your case.",
+   "labels": []
+  },
+  {
+   "id": "c076",
+   "source": "https://truebalance.io/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "The Personal Information will not be used for purposes other than providing services.",
+   "labels": []
+  },
+  {
+   "id": "c077",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "For example, although Incognito mode in Chrome can help keep your browsing private from other people who use your device, third party sites and apps that integrate our services still share information with Google when you visit them.",
+   "labels": []
+  },
+  {
+   "id": "c078",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "If you believe they have been stolen or been made known to others, you must contact us immediately at care@paywithring.com/ care@kissht.com/ care@conexo.in.",
+   "labels": []
+  },
+  {
+   "id": "c079",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "However, some website features or services may not function properly without cookies.",
+   "labels": []
+  },
+  {
+   "id": "c080",
+   "source": "https://signal.org/legal/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "You may optionally add other information to your account, such as a profile name and profile picture.",
+   "labels": []
+  },
+  {
+   "id": "c081",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We have no intention to introduce them, but you may see other types of ads in Status and Channels.",
+   "labels": []
+  },
+  {
+   "id": "c082",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We maintain servers around the world and your information may be processed on servers located outside of the country where you live.",
+   "labels": [
+    "cross_border_transfer"
+   ]
+  },
+  {
+   "id": "c083",
+   "source": "https://www.whatsapp.com/legal/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Since we started WhatsApp, we’ve built our services with a set of strong privacy principles in mind.",
+   "labels": []
+  },
+  {
+   "id": "c084",
+   "source": "https://openai.com/policies/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We’ll retain your Personal Data for only as long as we need in order to provide our Services to you, or for other legitimate business purposes such as resolving disputes, safety and security reasons, or complying with our legal obligations.",
+   "labels": [
+    "data_retention"
+   ]
+  },
+  {
+   "id": "c085",
+   "source": "https://www.kissht.com/terms-of-service",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Daily charges of up to 0.2% of the overdue principal amount | Penal Charges for a continuing default in repayment of an EMI.",
+   "labels": [
+    "cost_of_credit"
+   ]
+  },
+  {
+   "id": "c086",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "We do not share your personal identifiable information and Government IDs such as PAN, Aadhaar details, VID number with these 3rd parties.",
+   "labels": []
+  },
+  {
+   "id": "c087",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Consent - You have explicitly agreed to our processing for a specific reason",
+   "labels": []
+  },
+  {
+   "id": "c088",
+   "source": "https://www.kissht.com/terms-of-service",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "1 | Processing fees | Up to 7% | Up to 7% | Up to 7%",
+   "labels": [
+    "cost_of_credit"
+   ]
+  },
+  {
+   "id": "c089",
+   "source": "https://signal.org/legal/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "You agree to resolve any Claim you have with us relating to or arising out of our Terms, us, or our Services exclusively in the United States District Court for the Northern District of California or a state court in San Mateo County, California.",
+   "labels": []
+  },
+  {
+   "id": "c090",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Different identifiers vary in how permanent they are, whether they can be reset by users, and how they can be accessed.",
+   "labels": []
+  },
+  {
+   "id": "c091",
+   "source": "https://truebalance.io/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "BH may share information with other third parties under strict confidential/non-disclosure agreement but won’t be liable for the security breach of the third party.",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c092",
+   "source": "https://truebalance.io/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "BH will use reasonable efforts to notify you of any claim, action, or proceeding brought by a third party that is subject to the foregoing indemnification upon becoming aware of it.",
+   "labels": []
+  },
+  {
+   "id": "c093",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We provide personal information to our affiliates and other trusted businesses or persons to process it for us, based on our instructions and in compliance with our Privacy Policy and any other appropriate confidentiality and security measures.",
+   "labels": [
+    "third_party_sharing"
+   ]
+  },
+  {
+   "id": "c094",
+   "source": "https://www.kissht.com/terms-of-service",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "The Financer reserves the right to decide the loan amount and approve or reject the application at its sole and absolute discretion.",
+   "labels": []
+  },
+  {
+   "id": "c095",
+   "source": "https://signal.org/legal/",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "In order to enable new features and enhanced functionality, you consent to downloading and installing updates to our Services.",
+   "labels": []
+  },
+  {
+   "id": "c096",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "We don’t show you personalized ads based on your content from Drive, Gmail, or Photos.",
+   "labels": []
+  },
+  {
+   "id": "c097",
+   "source": "https://www.kissht.com/privacy-policy",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "Anyone with this access is subject to strict contractual confidentiality obligations and may be disciplined or terminated if they fail to meet these obligations;",
+   "labels": []
+  },
+  {
+   "id": "c098",
+   "source": "https://truebalance.io/privacy-policy/",
+   "retrieved": "2026-09-09",
+   "rule_set": "loan_app",
+   "text": "User Correspondence details: This includes your email addresses, your phone number registered with us and residential address.",
+   "labels": []
+  },
+  {
+   "id": "c099",
+   "source": "https://policies.google.com/privacy",
+   "retrieved": "2026-09-09",
+   "rule_set": "generic",
+   "text": "Because of this, there may be delays between when you delete something and when copies are deleted from our active and backup systems.",
+   "labels": [
+    "data_retention"
+   ]
+  }
+ ]
+}
