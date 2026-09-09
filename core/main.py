@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 # Support direct execution: python core/main.py
@@ -36,6 +37,7 @@ from core.scorer.scorer import Scorer
 from core.scraper import available_drivers, get_driver
 from core.summarizer.simple import SimpleSummarizer
 from core.tags import available_tag_sets, get_tag_set
+from core.tags.relevance import check_relevance
 
 __all__ = ["run", "run_pipeline"]
 
@@ -55,12 +57,26 @@ def run(driver_name: str, target: str, tag_set_name: str) -> Verdict:
 	clauses = SimpleSummarizer().clean(result)
 	findings = RuleAnalyzer().classify(clauses, rule_set, origin=result.origin)
 
-	return Scorer().score(
+	verdict = Scorer().score(
 		findings,
 		rule_set=rule_set.name,
 		origin=result.origin,
 		clauses_analyzed=len(clauses),
 	)
+
+	# Advisory, never a veto. Running a rule set against something it was not
+	# written for is allowed, and sometimes deliberate, but the user should be
+	# told when the fit looks wrong rather than handed a confident verdict on
+	# the wrong grounds. Attached here rather than in the scorer so scoring
+	# stays purely a function of the findings.
+	relevance = check_relevance(clauses, rule_set)
+	if not relevance.applies:
+		verdict = replace(
+			verdict,
+			metadata={**verdict.metadata, "relevance": relevance.to_dict()},
+		)
+
+	return verdict
 
 
 def run_pipeline(target: str, tag_set_name: str = "generic", driver_name: str = "raw_text") -> Verdict:

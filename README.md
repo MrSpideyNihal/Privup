@@ -27,11 +27,11 @@ number a borrower is actually agreeing to.
 
 ## Status
 
-Part 1 is complete: the core pipeline runs end to end on both drivers and both
-rule sets. A CLI and a local UI are next.
+Parts 1 and 2 are complete: the core pipeline, a scriptable CLI, and a local
+web UI. Browser extension and Android are next.
 
 ```bash
-python core/main.py "We access your contact list to assess creditworthiness." --tags loan_app
+python -m cli scan "We access your contact list to assess creditworthiness." --tags loan_app
 ```
 
 ```
@@ -42,13 +42,24 @@ risk 76/100 from 3 finding(s) across 1 clause(s), rule set 'loan_app'
   - This app never names the regulated bank or NBFC actually lending the money. You are entitled to know who your lender is.
 ```
 
-Also works on a URL, and follows a policy link if you give it a homepage:
+Also works on a URL, and follows the policy link if you give it a homepage:
 
 ```bash
-python core/main.py https://example.com --driver url --tags generic --format json
+python -m cli scan https://example.com --driver url --tags generic --format json
 ```
 
-Exit status is non-zero on Deny, so it is usable from a script.
+Exit status is non-zero on Deny, so it works in CI. You could run it against
+your own app's policy before release.
+
+Or use the local UI:
+
+```bash
+python -m ui
+```
+
+One box, one rule set, one button. Each finding expands to show the clause
+that triggered it, so you see why and not just that. It binds to loopback,
+stores nothing, and loads no fonts or scripts from the internet.
 
 ## How it works
 
