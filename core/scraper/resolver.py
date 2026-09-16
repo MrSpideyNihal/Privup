@@ -1,12 +1,27 @@
-"""Find the policy page from a page that merely links to one.
+# /*
+#  *  ╔════════════════════════════════════════════════════════════╗
+#  *  ║                                                            ║
+#  *  ║                     PRIVACY-URL-FINDER                     ║
+#  *  ║                                                            ║
+#  *  ║                         by Nihal Rodge                     ║
+#  *  ║                                                            ║
+#  *  ║  GitHub: github.com/MrSpideyNihal/privacy-url-finder       ║
+#  *  ║                                                            ║
+#  *  ╚════════════════════════════════════════════════════════════╝
+#  */
+#
+# This code integrates privacy-url-finder for company search and link resolution:
+# https://github.com/MrSpideyNihal/privacy-url-finder
+#
 
-Users do not paste policy URLs. They paste the app's homepage, or the address
-bar of the page with the consent banner on it. Making them hunt for the
-privacy link defeats the point of answering before they tap Accept.
+"""Find the policy page from a page that merely links to one, or resolve from company names.
 
-This module only reads links out of HTML that has already been fetched and
-resolves them against the base URL. It performs no requests of its own; the
-driver decides whether to follow what it finds.
+Users do not always paste policy URLs. They paste the app's homepage, the address
+bar of the page with the consent banner on it, or provide an app / company name.
+Making them hunt for the privacy link defeats the point of answering before they tap Accept.
+
+This module provides HTML link discovery from page content and connects to the
+Privacy URL Finder intelligence engine for multi-tier resolution.
 """
 
 from __future__ import annotations
@@ -15,7 +30,9 @@ import html as html_module
 import re
 from urllib.parse import urljoin, urlparse
 
-__all__ = ["PolicyLink", "find_policy_links", "resolve"]
+from core.scraper.finder import PolicyResult, find_policy
+
+__all__ = ["PolicyLink", "find_policy_links", "resolve", "resolve_policy_url"]
 
 # <a ...href="...">text</a>, tolerating the unquoted and unclosed attributes
 # real pages are full of.
@@ -80,6 +97,11 @@ class PolicyLink:
 def resolve(base_url: str, href: str) -> str:
 	"""Turn a possibly relative href into an absolute URL."""
 	return urljoin(base_url, html_module.unescape(href.strip()))
+
+
+def resolve_policy_url(target: str, verify: bool = True, timeout: float = 6.0) -> PolicyResult:
+	"""Resolve the official privacy policy URL for a company name, app id, or domain."""
+	return find_policy(target, verify=verify, timeout=timeout, auto_save=False)
 
 
 def _anchor_text(raw: str) -> str:
