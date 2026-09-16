@@ -22,7 +22,12 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 from typing import Sequence
+
+# Support direct execution: python cli/main.py
+if __package__ is None or __package__ == "":
+	sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from core.main import run
 from core.models import Decision

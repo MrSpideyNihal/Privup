@@ -30,6 +30,7 @@ include = ["core*"]
 
 [tool.setuptools.package-data]
 "core.tags" = ["rulesets/*.json"]
+"core.scraper.finder" = ["py.typed", "dataset/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

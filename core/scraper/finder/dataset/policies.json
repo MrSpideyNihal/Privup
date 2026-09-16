@@ -1,0 +1,906 @@
+[
+  {
+    "id": "kreditbee",
+    "name": "KreditBee",
+    "aliases": [
+      "kredit bee",
+      "kreditbee loan",
+      "com.kreditbee.android",
+      "krazybee"
+    ],
+    "domain": "kreditbee.in",
+    "privacy_url": "https://www.kreditbee.in/privacy-policy",
+    "terms_url": "https://www.kreditbee.in/terms-and-conditions",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Krazybee Services Private Limited"
+  },
+  {
+    "id": "navi",
+    "name": "Navi",
+    "aliases": [
+      "navi loan",
+      "navi finserv",
+      "navi upi",
+      "com.navifinance"
+    ],
+    "domain": "navi.com",
+    "privacy_url": "https://navi.com/privacy-policy",
+    "terms_url": "https://navi.com/terms-and-conditions",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Navi Finserv Limited"
+  },
+  {
+    "id": "kissht",
+    "name": "Kissht",
+    "aliases": [
+      "kissht loan",
+      "onemi",
+      "com.kissht",
+      "ring app"
+    ],
+    "domain": "kissht.com",
+    "privacy_url": "https://kissht.com/privacy-policy",
+    "terms_url": "https://kissht.com/terms-conditions",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Si Creva Capital Services Private Limited"
+  },
+  {
+    "id": "ring",
+    "name": "RING",
+    "aliases": [
+      "ring payment",
+      "ring loan",
+      "com.ring.android"
+    ],
+    "domain": "ring.pe",
+    "privacy_url": "https://ring.pe/privacy-policy",
+    "terms_url": "https://ring.pe/terms-and-conditions",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Si Creva Capital Services Private Limited"
+  },
+  {
+    "id": "cashe",
+    "name": "CASHe",
+    "aliases": [
+      "cashe loan",
+      "co.tslc.cashe.android.cashe",
+      "bhanix"
+    ],
+    "domain": "cashe.co.in",
+    "privacy_url": "https://www.cashe.co.in/privacy-policy",
+    "terms_url": "https://www.cashe.co.in/terms-of-use",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Bhanix Finance and Investment Limited"
+  },
+  {
+    "id": "mpokket",
+    "name": "mPokket",
+    "aliases": [
+      "mpokket loan",
+      "in.mpokket",
+      "m pokket"
+    ],
+    "domain": "mpokket.in",
+    "privacy_url": "https://www.mpokket.in/privacy-policy",
+    "terms_url": "https://www.mpokket.in/terms-and-conditions",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Maybright Ventures Private Limited"
+  },
+  {
+    "id": "moneytap",
+    "name": "MoneyTap (Freo)",
+    "aliases": [
+      "moneytap",
+      "money tap",
+      "freo",
+      "com.myocv.moneytap",
+      "freo save"
+    ],
+    "domain": "freo.money",
+    "privacy_url": "https://freo.money/privacy-policy",
+    "terms_url": "https://freo.money/terms-and-conditions",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "MWYN Tech Private Limited"
+  },
+  {
+    "id": "paysense",
+    "name": "PaySense",
+    "aliases": [
+      "paysense loan",
+      "com.investify.paysense",
+      "payu finance"
+    ],
+    "domain": "gopaysense.com",
+    "privacy_url": "https://www.gopaysense.com/privacy-policy/",
+    "terms_url": "https://www.gopaysense.com/terms-conditions/",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "PayU Finance India Private Limited"
+  },
+  {
+    "id": "fibe",
+    "name": "Fibe (EarlySalary)",
+    "aliases": [
+      "earlysalary",
+      "early salary",
+      "fibe loan",
+      "com.earlysalary.android"
+    ],
+    "domain": "fibe.in",
+    "privacy_url": "https://www.fibe.in/privacy-policy/",
+    "terms_url": "https://www.fibe.in/terms-and-conditions/",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Earlysalary Services Private Limited"
+  },
+  {
+    "id": "bajajfinserv",
+    "name": "Bajaj Finserv",
+    "aliases": [
+      "bajaj finance",
+      "bajaj finserv app",
+      "org.altruist.BajajExperia"
+    ],
+    "domain": "bajajfinserv.in",
+    "privacy_url": "https://www.bajajfinserv.in/privacy-policy",
+    "terms_url": "https://www.bajajfinserv.in/terms-and-conditions",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Bajaj Finance Limited"
+  },
+  {
+    "id": "rupeeredee",
+    "name": "RupeeRedee",
+    "aliases": [
+      "rupee redee",
+      "com.rupeeredee",
+      "fincfriends"
+    ],
+    "domain": "rupeeredee.com",
+    "privacy_url": "https://www.rupeeredee.com/privacy-policy",
+    "terms_url": "https://www.rupeeredee.com/terms-and-conditions",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Fincfriends Private Limited"
+  },
+  {
+    "id": "smartcoin",
+    "name": "SmartCoin (Olyv)",
+    "aliases": [
+      "olyv",
+      "smart coin",
+      "in.rebase.app"
+    ],
+    "domain": "olyv.com",
+    "privacy_url": "https://olyv.com/privacy-policy",
+    "terms_url": "https://olyv.com/terms-of-use",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Smartcoin Financials India Private Limited"
+  },
+  {
+    "id": "branch",
+    "name": "Branch Personal Loan",
+    "aliases": [
+      "branch loan",
+      "com.branch_international.android.branch"
+    ],
+    "domain": "branch.co",
+    "privacy_url": "https://branch.co/privacy",
+    "terms_url": "https://branch.co/terms",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Branch International Financial Services Private Limited"
+  },
+  {
+    "id": "stashfin",
+    "name": "Stashfin",
+    "aliases": [
+      "stash fin",
+      "com.stashfin.android",
+      "akara capital"
+    ],
+    "domain": "stashfin.com",
+    "privacy_url": "https://www.stashfin.com/privacy-policy",
+    "terms_url": "https://www.stashfin.com/terms-and-conditions",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "Akara Capital Advisors Private Limited"
+  },
+  {
+    "id": "lazypay",
+    "name": "LazyPay",
+    "aliases": [
+      "lazy pay",
+      "com.payu.lazypay"
+    ],
+    "domain": "lazypay.in",
+    "privacy_url": "https://lazypay.in/privacy-policy",
+    "terms_url": "https://lazypay.in/terms-and-conditions",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "PayU Finance India Private Limited"
+  },
+  {
+    "id": "truebalance",
+    "name": "TrueBalance",
+    "aliases": [
+      "true balance",
+      "com.balancehero.truebalance"
+    ],
+    "domain": "truebalance.io",
+    "privacy_url": "https://www.truebalance.io/privacy-policy",
+    "terms_url": "https://www.truebalance.io/terms",
+    "category": "lending",
+    "country": "IN",
+    "regulated_nbfc": "True Credits Private Limited"
+  },
+  {
+    "id": "nira",
+    "name": "NIRA",
+    "aliases": [
+      "nira loan",
+      "com.nira"
+    ],
+    "domain": "nirafinance.com",
+    "privacy_url": "https://nirafinance.com/privacy-policy/",
+    "terms_url": "https://nirafinance.com/terms-and-conditions/",
+    "category": "lending",
+    "country": "IN"
+  },
+  {
+    "id": "homecredit",
+    "name": "Home Credit India",
+    "aliases": [
+      "home credit",
+      "com.homecredit.in"
+    ],
+    "domain": "homecredit.co.in",
+    "privacy_url": "https://www.homecredit.co.in/privacy-policy",
+    "terms_url": "https://www.homecredit.co.in/terms-and-conditions",
+    "category": "lending",
+    "country": "IN"
+  },
+  {
+    "id": "tatacapital",
+    "name": "Tata Capital",
+    "aliases": [
+      "tata capital loan",
+      "com.tatacapital.myloan"
+    ],
+    "domain": "tatacapital.com",
+    "privacy_url": "https://www.tatacapital.com/privacy-policy.html",
+    "terms_url": "https://www.tatacapital.com/terms-and-conditions.html",
+    "category": "lending",
+    "country": "IN"
+  },
+  {
+    "id": "cred",
+    "name": "CRED",
+    "aliases": [
+      "cred app",
+      "dreamplug",
+      "com.dreamplug.androidapp"
+    ],
+    "domain": "cred.club",
+    "privacy_url": "https://cred.club/privacy",
+    "terms_url": "https://cred.club/terms-and-conditions",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "paytm",
+    "name": "Paytm",
+    "aliases": [
+      "paytm payments bank",
+      "one97",
+      "net.one97.paytm"
+    ],
+    "domain": "paytm.com",
+    "privacy_url": "https://paytm.com/policies/privacy-policy",
+    "terms_url": "https://paytm.com/policies/terms-conditions",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "phonepe",
+    "name": "PhonePe",
+    "aliases": [
+      "phone pe",
+      "com.phonepe.app"
+    ],
+    "domain": "phonepe.com",
+    "privacy_url": "https://www.phonepe.com/privacy-policy/",
+    "terms_url": "https://www.phonepe.com/terms-conditions/",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "googlepay",
+    "name": "Google Pay India (GPay)",
+    "aliases": [
+      "gpay",
+      "google pay",
+      "tez",
+      "com.google.android.apps.nbu.paisa.user"
+    ],
+    "domain": "pay.google.com",
+    "privacy_url": "https://policies.google.com/privacy",
+    "terms_url": "https://policies.google.com/terms",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "groww",
+    "name": "Groww",
+    "aliases": [
+      "groww app",
+      "nextbillion",
+      "com.nextbillion.groww"
+    ],
+    "domain": "groww.in",
+    "privacy_url": "https://groww.in/privacy-policy",
+    "terms_url": "https://groww.in/terms-and-conditions",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "zerodha",
+    "name": "Zerodha (Kite)",
+    "aliases": [
+      "kite",
+      "zerodha kite",
+      "com.zerodha.kite3"
+    ],
+    "domain": "zerodha.com",
+    "privacy_url": "https://zerodha.com/privacy-policy",
+    "terms_url": "https://zerodha.com/terms-and-conditions",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "angelone",
+    "name": "Angel One",
+    "aliases": [
+      "angel broking",
+      "com.msf.angelmobile"
+    ],
+    "domain": "angelone.in",
+    "privacy_url": "https://www.angelone.in/privacy-policy",
+    "terms_url": "https://www.angelone.in/terms-and-conditions",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "upstox",
+    "name": "Upstox",
+    "aliases": [
+      "rksv",
+      "in.upstox.app"
+    ],
+    "domain": "upstox.com",
+    "privacy_url": "https://upstox.com/privacy-policy/",
+    "terms_url": "https://upstox.com/terms-of-use/",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "mobikwik",
+    "name": "MobiKwik",
+    "aliases": [
+      "mobikwik wallet",
+      "com.mobikwik_new",
+      "zip pay later"
+    ],
+    "domain": "mobikwik.com",
+    "privacy_url": "https://www.mobikwik.com/privacy",
+    "terms_url": "https://www.mobikwik.com/termsandconditions",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "bharatpe",
+    "name": "BharatPe",
+    "aliases": [
+      "bharat pe",
+      "postpe",
+      "com.bharatpe.app"
+    ],
+    "domain": "bharatpe.com",
+    "privacy_url": "https://bharatpe.com/privacy-policy",
+    "terms_url": "https://bharatpe.com/terms-of-use",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "slice",
+    "name": "Slice",
+    "aliases": [
+      "slice card",
+      "garageprenuers",
+      "ind.garages.app"
+    ],
+    "domain": "sliceit.com",
+    "privacy_url": "https://www.sliceit.com/privacy",
+    "terms_url": "https://www.sliceit.com/terms",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "jupiter",
+    "name": "Jupiter Money",
+    "aliases": [
+      "jupiter",
+      "jupiter neo bank",
+      "money.jupiter"
+    ],
+    "domain": "jupiter.money",
+    "privacy_url": "https://jupiter.money/privacy-policy/",
+    "terms_url": "https://jupiter.money/terms-and-conditions/",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "fi",
+    "name": "Fi Money",
+    "aliases": [
+      "fi",
+      "epifi",
+      "money.fi.app"
+    ],
+    "domain": "fi.money",
+    "privacy_url": "https://fi.money/privacy-policy",
+    "terms_url": "https://fi.money/terms-and-conditions",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "razorpay",
+    "name": "Razorpay",
+    "aliases": [
+      "razor pay",
+      "razorpayx"
+    ],
+    "domain": "razorpay.com",
+    "privacy_url": "https://razorpay.com/privacy/",
+    "terms_url": "https://razorpay.com/terms/",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "cashfree",
+    "name": "Cashfree Payments",
+    "aliases": [
+      "cashfree",
+      "cashfree payments"
+    ],
+    "domain": "cashfree.com",
+    "privacy_url": "https://www.cashfree.com/privacypolicy/",
+    "terms_url": "https://www.cashfree.com/terms-of-use/",
+    "category": "fintech",
+    "country": "IN"
+  },
+  {
+    "id": "flipkart",
+    "name": "Flipkart",
+    "aliases": [
+      "flipkart online",
+      "com.flipkart.android"
+    ],
+    "domain": "flipkart.com",
+    "privacy_url": "https://www.flipkart.com/pages/privacypolicy",
+    "terms_url": "https://www.flipkart.com/pages/terms",
+    "category": "ecommerce",
+    "country": "IN"
+  },
+  {
+    "id": "amazon_in",
+    "name": "Amazon India",
+    "aliases": [
+      "amazon",
+      "amazon.in",
+      "in.amazon.mShop.android.shopping"
+    ],
+    "domain": "amazon.in",
+    "privacy_url": "https://www.amazon.in/gp/help/customer/display.html?nodeId=200534380",
+    "terms_url": "https://www.amazon.in/gp/help/customer/display.html?nodeId=200545940",
+    "category": "ecommerce",
+    "country": "IN"
+  },
+  {
+    "id": "swiggy",
+    "name": "Swiggy",
+    "aliases": [
+      "swiggy instamart",
+      "in.swiggy.android"
+    ],
+    "domain": "swiggy.com",
+    "privacy_url": "https://www.swiggy.com/privacy-policy",
+    "terms_url": "https://www.swiggy.com/terms-and-conditions",
+    "category": "delivery",
+    "country": "IN"
+  },
+  {
+    "id": "zomato",
+    "name": "Zomato",
+    "aliases": [
+      "com.application.zomato"
+    ],
+    "domain": "zomato.com",
+    "privacy_url": "https://www.zomato.com/privacy",
+    "terms_url": "https://www.zomato.com/conditions",
+    "category": "delivery",
+    "country": "IN"
+  },
+  {
+    "id": "zepto",
+    "name": "Zepto",
+    "aliases": [
+      "zepto delivery",
+      "com.zepto.shopping"
+    ],
+    "domain": "zeptonow.com",
+    "privacy_url": "https://www.zeptonow.com/privacy-policy",
+    "terms_url": "https://www.zeptonow.com/terms-and-conditions",
+    "category": "quickcommerce",
+    "country": "IN"
+  },
+  {
+    "id": "blinkit",
+    "name": "Blinkit",
+    "aliases": [
+      "grofers",
+      "com.grofers.customerapp"
+    ],
+    "domain": "blinkit.com",
+    "privacy_url": "https://blinkit.com/privacy",
+    "terms_url": "https://blinkit.com/terms",
+    "category": "quickcommerce",
+    "country": "IN"
+  },
+  {
+    "id": "ola",
+    "name": "Ola Cabs",
+    "aliases": [
+      "ola",
+      "ani technologies",
+      "com.olacabs.customer"
+    ],
+    "domain": "olacabs.com",
+    "privacy_url": "https://www.olacabs.com/info/faqs#privacyPolicy",
+    "terms_url": "https://www.olacabs.com/info/faqs#termsAndConditions",
+    "category": "ridehailing",
+    "country": "IN"
+  },
+  {
+    "id": "uber",
+    "name": "Uber",
+    "aliases": [
+      "uber rides",
+      "com.ubercab"
+    ],
+    "domain": "uber.com",
+    "privacy_url": "https://www.uber.com/legal/en/document/?name=privacy-notice",
+    "terms_url": "https://www.uber.com/legal/en/document/?name=general-terms-of-use",
+    "category": "ridehailing",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "rapido",
+    "name": "Rapido",
+    "aliases": [
+      "rapido bike",
+      "com.rapido.passenger"
+    ],
+    "domain": "rapido.bike",
+    "privacy_url": "https://www.rapido.bike/PrivacyPolicy",
+    "terms_url": "https://www.rapido.bike/TermsAndConditions",
+    "category": "ridehailing",
+    "country": "IN"
+  },
+  {
+    "id": "jio",
+    "name": "MyJio / Reliance Jio",
+    "aliases": [
+      "jio",
+      "myjio",
+      "reliance jio",
+      "com.jio.myjio"
+    ],
+    "domain": "jio.com",
+    "privacy_url": "https://www.jio.com/en-in/privacy-policy",
+    "terms_url": "https://www.jio.com/en-in/terms-conditions",
+    "category": "telecom",
+    "country": "IN"
+  },
+  {
+    "id": "airtel",
+    "name": "Airtel Thanks",
+    "aliases": [
+      "airtel",
+      "bharti airtel",
+      "com.myairtelapp"
+    ],
+    "domain": "airtel.in",
+    "privacy_url": "https://www.airtel.in/privacy-policy",
+    "terms_url": "https://www.airtel.in/terms-and-conditions",
+    "category": "telecom",
+    "country": "IN"
+  },
+  {
+    "id": "whatsapp",
+    "name": "WhatsApp",
+    "aliases": [
+      "whats app",
+      "com.whatsapp"
+    ],
+    "domain": "whatsapp.com",
+    "privacy_url": "https://www.whatsapp.com/legal/privacy-policy",
+    "terms_url": "https://www.whatsapp.com/legal/terms-of-service",
+    "category": "social",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "instagram",
+    "name": "Instagram",
+    "aliases": [
+      "insta",
+      "com.instagram.android"
+    ],
+    "domain": "instagram.com",
+    "privacy_url": "https://privacycenter.instagram.com/policy",
+    "terms_url": "https://help.instagram.com/581066165581870",
+    "category": "social",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "facebook",
+    "name": "Meta / Facebook",
+    "aliases": [
+      "meta",
+      "facebook",
+      "com.facebook.katana"
+    ],
+    "domain": "facebook.com",
+    "privacy_url": "https://www.facebook.com/privacy/policy",
+    "terms_url": "https://www.facebook.com/legal/terms",
+    "category": "social",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "google",
+    "name": "Google",
+    "aliases": [
+      "google llc",
+      "com.google.android.googlequicksearchbox"
+    ],
+    "domain": "google.com",
+    "privacy_url": "https://policies.google.com/privacy",
+    "terms_url": "https://policies.google.com/terms",
+    "category": "tech",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "apple",
+    "name": "Apple",
+    "aliases": [
+      "apple inc",
+      "icloud",
+      "app store"
+    ],
+    "domain": "apple.com",
+    "privacy_url": "https://www.apple.com/legal/privacy/en-ww/",
+    "terms_url": "https://www.apple.com/legal/internet-services/itunes/",
+    "category": "tech",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "microsoft",
+    "name": "Microsoft",
+    "aliases": [
+      "msft",
+      "windows",
+      "office 365"
+    ],
+    "domain": "microsoft.com",
+    "privacy_url": "https://privacy.microsoft.com/en-us/privacystatement",
+    "terms_url": "https://www.microsoft.com/en-us/servicesagreement",
+    "category": "tech",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "spotify",
+    "name": "Spotify",
+    "aliases": [
+      "spotify music",
+      "com.spotify.music"
+    ],
+    "domain": "spotify.com",
+    "privacy_url": "https://www.spotify.com/legal/privacy-policy/",
+    "terms_url": "https://www.spotify.com/legal/end-user-agreement/",
+    "category": "media",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "netflix",
+    "name": "Netflix",
+    "aliases": [
+      "netflix video",
+      "com.netflix.mediaclient"
+    ],
+    "domain": "netflix.com",
+    "privacy_url": "https://help.netflix.com/legal/privacy",
+    "terms_url": "https://help.netflix.com/legal/termsofuse",
+    "category": "media",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "telegram",
+    "name": "Telegram",
+    "aliases": [
+      "telegram messenger",
+      "org.telegram.messenger"
+    ],
+    "domain": "telegram.org",
+    "privacy_url": "https://telegram.org/privacy",
+    "terms_url": "https://telegram.org/tos",
+    "category": "social",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "twitter",
+    "name": "X (formerly Twitter)",
+    "aliases": [
+      "twitter",
+      "x",
+      "x.com",
+      "com.twitter.android"
+    ],
+    "domain": "x.com",
+    "privacy_url": "https://x.com/en/privacy",
+    "terms_url": "https://x.com/en/tos",
+    "category": "social",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "linkedin",
+    "name": "LinkedIn",
+    "aliases": [
+      "linked in",
+      "com.linkedin.android"
+    ],
+    "domain": "linkedin.com",
+    "privacy_url": "https://www.linkedin.com/legal/privacy-policy",
+    "terms_url": "https://www.linkedin.com/legal/user-agreement",
+    "category": "social",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "reddit",
+    "name": "Reddit",
+    "aliases": [
+      "reddit inc",
+      "com.reddit.frontpage"
+    ],
+    "domain": "reddit.com",
+    "privacy_url": "https://www.reddit.com/policies/privacy-policy",
+    "terms_url": "https://www.reddit.com/policies/user-agreement",
+    "category": "social",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "discord",
+    "name": "Discord",
+    "aliases": [
+      "discord app",
+      "com.discord"
+    ],
+    "domain": "discord.com",
+    "privacy_url": "https://discord.com/privacy",
+    "terms_url": "https://discord.com/terms",
+    "category": "social",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "github",
+    "name": "GitHub",
+    "aliases": [
+      "git hub",
+      "com.github.android"
+    ],
+    "domain": "github.com",
+    "privacy_url": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
+    "terms_url": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+    "category": "developer",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "openai",
+    "name": "OpenAI (ChatGPT)",
+    "aliases": [
+      "chatgpt",
+      "chat gpt",
+      "openai",
+      "com.openai.chatgpt"
+    ],
+    "domain": "openai.com",
+    "privacy_url": "https://openai.com/policies/privacy-policy/",
+    "terms_url": "https://openai.com/policies/terms-of-use/",
+    "category": "ai",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "anthropic",
+    "name": "Anthropic (Claude)",
+    "aliases": [
+      "claude",
+      "claude ai",
+      "anthropic"
+    ],
+    "domain": "anthropic.com",
+    "privacy_url": "https://www.anthropic.com/privacy",
+    "terms_url": "https://www.anthropic.com/terms",
+    "category": "ai",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "unknownstartup",
+    "name": "Unknownstartup",
+    "aliases": [
+      "https://unknownstartup.io"
+    ],
+    "domain": "unknownstartup.io",
+    "privacy_url": "https://unknownstartup.io/legal/privacy-policy",
+    "category": "auto_discovered",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "payoneer",
+    "name": "Payoneer",
+    "aliases": [],
+    "domain": "payoneer.com",
+    "privacy_url": "https://www.payoneer.com/legal/privacy-policy/",
+    "category": "auto_discovered",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "websitebeautiful",
+    "name": "Website Beautiful",
+    "aliases": [
+      "com.beatful.beatful"
+    ],
+    "domain": "websitebeautiful.com",
+    "privacy_url": "https://websitebeautiful.com/privacy-policy/",
+    "category": "auto_discovered",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "www",
+    "name": "Www",
+    "aliases": [
+      "archumart"
+    ],
+    "domain": "www.archimat.io",
+    "privacy_url": "https://www.archimat.io/privacy-policy/",
+    "category": "auto_discovered",
+    "country": "GLOBAL"
+  },
+  {
+    "id": "netlify",
+    "name": "Netlify",
+    "aliases": [
+      "archumart.netlify"
+    ],
+    "domain": "www.netlify.com",
+    "privacy_url": "https://www.netlify.com/privacy/",
+    "category": "auto_discovered",
+    "country": "GLOBAL"
+  }
+]
