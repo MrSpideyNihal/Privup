@@ -34,11 +34,11 @@
   <form class="composer" id="composer" novalidate>
     <div class="segmented" role="radiogroup" aria-label="Rule set" id="tagset"></div>
 
-    <div class="segmented input-modes" role="tablist" aria-label="Input mode" id="input-modes">
-      <button type="button" role="tab" class="mode-tab" id="tab-company" aria-selected="true" data-mode="company">
+    <div class="segmented input-modes" role="radiogroup" aria-label="Input mode" id="input-modes">
+      <button type="button" role="radio" class="mode-tab" id="tab-company" aria-checked="true" aria-selected="true" data-mode="company">
         Company / App Name
       </button>
-      <button type="button" role="tab" class="mode-tab" id="tab-text" aria-selected="false" data-mode="text">
+      <button type="button" role="radio" class="mode-tab" id="tab-text" aria-checked="false" aria-selected="false" data-mode="text">
         Policy Text or Direct Link
       </button>
     </div>

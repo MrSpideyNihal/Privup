@@ -40,6 +40,31 @@ const SEVERITY_ORDER = ["critical", "high", "medium", "low", "info"];
 
 let currentTags = "generic";
 
+/* ---------- sliding segmented pill indicator ---------- */
+
+function updateSegmented(container) {
+  if (!container) return;
+  let indicator = container.querySelector(".segmented-indicator");
+  if (!indicator) {
+    indicator = document.createElement("span");
+    indicator.className = "segmented-indicator";
+    indicator.setAttribute("aria-hidden", "true");
+    container.prepend(indicator);
+  }
+
+  const activeBtn = container.querySelector('[aria-checked="true"], [aria-selected="true"]');
+  if (activeBtn) {
+    const left = activeBtn.offsetLeft;
+    const width = activeBtn.offsetWidth;
+    indicator.style.transform = `translateX(${left}px)`;
+    indicator.style.width = `${width}px`;
+  }
+}
+
+window.addEventListener("resize", () => {
+  document.querySelectorAll(".segmented").forEach(updateSegmented);
+});
+
 /* ---------- rule set selector ---------- */
 
 async function loadTagSets() {
@@ -64,13 +89,17 @@ async function loadTagSets() {
 
       button.addEventListener("click", () => {
         currentTags = set.name;
-        [...holder.children].forEach((other) =>
+        [...holder.children].filter((c) => c.tagName === "BUTTON").forEach((other) =>
           other.setAttribute("aria-checked", String(other === button))
         );
+        updateSegmented(holder);
       });
       return button;
     })
   );
+
+  updateSegmented(holder);
+  requestAnimationFrame(() => updateSegmented(holder));
 }
 
 /* ---------- rendering ---------- */
@@ -238,7 +267,12 @@ function initInputModes() {
     tab.addEventListener("click", () => {
       const mode = tab.dataset.mode;
       currentMode = mode;
-      tabs.forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
+      tabs.forEach((t) => {
+        const isSel = String(t === tab);
+        t.setAttribute("aria-selected", isSel);
+        t.setAttribute("aria-checked", isSel);
+      });
+      updateSegmented(modesHolder);
 
       if (mode === "company") {
         sectionCompany.hidden = false;
@@ -255,6 +289,9 @@ function initInputModes() {
       }
     });
   });
+
+  updateSegmented(modesHolder);
+  requestAnimationFrame(() => updateSegmented(modesHolder));
 
   const compInput = $("company-target");
   if (compInput) {
