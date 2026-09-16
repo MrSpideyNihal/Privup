@@ -116,6 +116,7 @@ h1 {
 }
 
 .segmented {
+  position: relative;
   display: flex;
   gap: .25rem;
   padding: .3rem;
@@ -124,7 +125,22 @@ h1 {
   margin-bottom: 1rem;
 }
 
+.segmented-indicator {
+  position: absolute;
+  top: .3rem;
+  bottom: .3rem;
+  left: 0;
+  border-radius: var(--r-pill);
+  background: var(--card);
+  box-shadow: var(--lift-low);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), width 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
 .segmented button {
+  position: relative;
+  z-index: 2;
   flex: 1;
   border: 0;
   background: transparent;
@@ -134,15 +150,36 @@ h1 {
   font-weight: 550;
   color: var(--ink-soft);
   cursor: pointer;
-  transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+  transition: color .2s ease;
 }
 
 .segmented button:hover { color: var(--ink); }
 
-.segmented button[aria-checked="true"] {
-  background: var(--card);
+.segmented button[aria-checked="true"],
+.segmented button[aria-selected="true"] {
   color: var(--ink);
+}
+
+/* Fallback before indicator mounts */
+.segmented:not(:has(.segmented-indicator)) button[aria-checked="true"],
+.segmented:not(:has(.segmented-indicator)) button[aria-selected="true"] {
+  background: var(--card);
   box-shadow: var(--lift-low);
+}
+
+.input-section {
+  animation: slideSection 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideSection {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .field { display: block; }
