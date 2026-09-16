@@ -902,5 +902,20 @@
     "privacy_url": "https://www.netlify.com/privacy/",
     "category": "auto_discovered",
     "country": "GLOBAL"
+  },
+  {
+    "id": "google_maps",
+    "name": "Google Maps",
+    "aliases": [
+      "maps",
+      "google maps",
+      "gmaps",
+      "com.google.android.apps.maps"
+    ],
+    "domain": "google.com",
+    "privacy_url": "https://policies.google.com/privacy",
+    "terms_url": "https://policies.google.com/terms",
+    "category": "tech",
+    "country": "GLOBAL"
   }
 ]

@@ -1,3 +1,19 @@
+# /*
+#  *  ╔════════════════════════════════════════════════════════════╗
+#  *  ║                                                            ║
+#  *  ║                     PRIVACY-URL-FINDER                     ║
+#  *  ║                                                            ║
+#  *  ║                         by Nihal Rodge                     ║
+#  *  ║                                                            ║
+#  *  ║  GitHub: github.com/MrSpideyNihal/privacy-url-finder       ║
+#  *  ║                                                            ║
+#  *  ╚════════════════════════════════════════════════════════════╝
+#  */
+#
+# This code integrates privacy-url-finder for company search and link resolution:
+# https://github.com/MrSpideyNihal/privacy-url-finder
+#
+
 """A local web UI for PrivUp.
 
 Standard library only, no build step, no accounts, no storage. It serves three
@@ -27,6 +43,7 @@ from urllib.parse import urlparse
 from core.main import run
 from core.models import Decision
 from core.scraper import DriverError, UnknownDriverError
+from core.scraper.finder.utils import is_android_package
 from core.tags import UnknownTagSetError, describe_tag_sets
 
 __all__ = ["build_server", "serve", "guess_driver", "analyze"]
@@ -54,18 +71,47 @@ _URL_LIKE = re.compile(
 	re.IGNORECASE,
 )
 
+_STOPWORDS = {
+	"a", "an", "the", "and", "or", "not", "is", "are", "was", "were",
+	"in", "on", "at", "to", "for", "of", "with", "by", "from",
+	"we", "our", "us", "you", "your", "they", "their", "it", "its",
+	"this", "that", "see", "all",
+}
+
 
 def guess_driver(target: str) -> str:
 	"""Pick a driver from what the user typed.
 
-	One line that looks like a link is a link. Everything else is text. Which
-	one was chosen is reported back and shown in the result, so the guess is
-	never silent.
+	URLs, domains, Android package IDs, and company/app names route to the
+	url driver (which handles both direct links and intelligent company
+	policy discovery). Multi-line text and prose sentences route to raw_text.
 	"""
 	stripped = target.strip()
-	if "\n" in stripped or " " in stripped:
+	if not stripped or "\n" in stripped:
 		return "raw_text"
-	return "url" if _URL_LIKE.match(stripped) else "raw_text"
+
+	if _URL_LIKE.match(stripped):
+		return "url"
+
+	if is_android_package(stripped):
+		return "url"
+
+	# If it has sentence punctuation or looks like prose, it's text.
+	if any(ch in stripped for ch in ".;:!?\"'()[]{}<>$%^&*+=~`|\\/"):
+		return "raw_text"
+
+	words = stripped.split()
+	# Single word without punctuation (e.g. 'maps', 'kreditbee', 'google', 'swiggy')
+	if len(words) == 1:
+		return "url"
+
+	# 2 to 4 words without sentence stop-words (e.g. 'Google Maps', 'Candy Crush')
+	if 2 <= len(words) <= 4:
+		lowered_words = {w.lower() for w in words}
+		if not lowered_words.intersection(_STOPWORDS):
+			return "url"
+
+	return "raw_text"
 
 
 def analyze(target: str, tag_set: str, driver: str | None = None) -> dict:
@@ -172,7 +218,7 @@ class _Handler(BaseHTTPRequestHandler):
 		driver = request.get("driver") or None
 
 		if not target.strip():
-			self._error(400, "Paste a policy, or a link to one.")
+			self._error(400, "Paste a policy, a link to one, or a company/app name.")
 			return
 
 		try:

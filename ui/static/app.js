@@ -1,3 +1,17 @@
+/*
+ *  ╔════════════════════════════════════════════════════════════╗
+ *  ║                                                            ║
+ *  ║                     PRIVACY-URL-FINDER                     ║
+ *  ║                                                            ║
+ *  ║                         by Nihal Rodge                     ║
+ *  ║                                                            ║
+ *  ║  GitHub: github.com/MrSpideyNihal/privacy-url-finder       ║
+ *  ║                                                            ║
+ *  ╚════════════════════════════════════════════════════════════╝
+ */
+/*
+ * This code integrates privacy-url-finder for company search and link resolution
+ */
 /* PrivUp local UI.
  *
  * Presentation only. Every judgement shown here was made by core/main.py;
@@ -194,7 +208,7 @@ function renderFindings(data) {
     ? `What it found (${findings.length})`
     : "What it found";
 
-  const source = data.driver === "url" ? data.origin : "pasted text";
+  const source = data.driver === "url" || data.driver === "company" ? data.origin : "pasted text";
   $("meta").textContent = `${data.clauses_analyzed} clauses read · ${data.rule_set} · ${source}`;
 }
 
@@ -214,7 +228,7 @@ async function analyze(event) {
 
   const target = $("target").value.trim();
   if (!target) {
-    setStatus("Paste a policy, or a link to one.", "error");
+    setStatus("Paste a policy, a link to one, or a company/app name.", "error");
     return;
   }
 

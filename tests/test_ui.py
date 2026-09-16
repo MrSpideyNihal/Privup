@@ -1,3 +1,19 @@
+# /*
+#  *  ╔════════════════════════════════════════════════════════════╗
+#  *  ║                                                            ║
+#  *  ║                     PRIVACY-URL-FINDER                     ║
+#  *  ║                                                            ║
+#  *  ║                         by Nihal Rodge                     ║
+#  *  ║                                                            ║
+#  *  ║  GitHub: github.com/MrSpideyNihal/privacy-url-finder       ║
+#  *  ║                                                            ║
+#  *  ╚════════════════════════════════════════════════════════════╝
+#  */
+#
+# This code integrates privacy-url-finder for company search and link resolution:
+# https://github.com/MrSpideyNihal/privacy-url-finder
+#
+
 """The local web UI.
 
 A smoke test, deliberately. The spec for this phase says not to over-invest in
@@ -66,6 +82,17 @@ class TestDriverGuessing:
 		"www.kissht.com/privacy-policy",
 	])
 	def test_a_link_is_a_link(self, target):
+		assert guess_driver(target) == "url"
+
+	@pytest.mark.parametrize("target", [
+		"maps",
+		"Google",
+		"Google Maps",
+		"KreditBee",
+		"com.google.android.apps.maps",
+		"Swiggy",
+	])
+	def test_company_and_app_names_route_to_url(self, target):
 		assert guess_driver(target) == "url"
 
 	@pytest.mark.parametrize("target", [

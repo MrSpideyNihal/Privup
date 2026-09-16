@@ -1,3 +1,15 @@
+<!--
+  ╔════════════════════════════════════════════════════════════╗
+  ║                                                            ║
+  ║                     PRIVACY-URL-FINDER                     ║
+  ║                                                            ║
+  ║                         by Nihal Rodge                     ║
+  ║                                                            ║
+  ║  GitHub: github.com/MrSpideyNihal/privacy-url-finder       ║
+  ║                                                            ║
+  ╚════════════════════════════════════════════════════════════╝
+  This code integrates privacy-url-finder for company search and link resolution
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +27,7 @@
     <div class="mark" aria-hidden="true"></div>
     <div>
       <h1>Know what<br>you're agreeing to.</h1>
-      <p class="standfirst">Paste a policy or a link. It is read on this machine and nothing is sent anywhere.</p>
+      <p class="standfirst">Paste a policy, a link, or a company name. It is read on this machine and nothing is sent anywhere.</p>
     </div>
   </header>
 
@@ -23,14 +35,14 @@
     <div class="segmented" role="radiogroup" aria-label="Rule set" id="tagset"></div>
 
     <label class="field">
-      <span class="field-label" id="input-label">Policy text, or a link to it</span>
+      <span class="field-label" id="input-label">Policy text, or a link to it or name!</span>
       <textarea id="target" rows="6" spellcheck="false"
                 aria-describedby="input-hint"
-                placeholder="Paste the policy here, or a link such as example.com/privacy"></textarea>
+                placeholder="Paste the policy here, a link such as example.com/privacy, or a company/app name such as maps"></textarea>
     </label>
 
     <div class="composer-foot">
-      <p class="hint" id="input-hint">A link is fetched and followed; text is read as-is.</p>
+      <p class="hint" id="input-hint">A link or company name is fetched and followed; text is read as-is.</p>
       <button class="analyze" type="submit" id="analyze">Analyze</button>
     </div>
   </form>
