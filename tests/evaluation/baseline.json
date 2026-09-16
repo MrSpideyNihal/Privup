@@ -1,0 +1,91 @@
+{
+ "micro": {
+  "true_positives": 25,
+  "false_positives": 1,
+  "false_negatives": 12,
+  "support": 37,
+  "precision": 0.9615,
+  "recall": 0.6757,
+  "f1": 0.7937
+ },
+ "macro": {
+  "precision": 0.9844,
+  "recall": 0.8209,
+  "f1": 0.8771
+ },
+ "by_category": {
+  "consent": {
+   "true_positives": 2,
+   "false_positives": 0,
+   "false_negatives": 0,
+   "support": 2,
+   "precision": 1.0,
+   "recall": 1.0,
+   "f1": 1.0
+  },
+  "cost_of_credit": {
+   "true_positives": 3,
+   "false_positives": 0,
+   "false_negatives": 0,
+   "support": 3,
+   "precision": 1.0,
+   "recall": 1.0,
+   "f1": 1.0
+  },
+  "cross_border_transfer": {
+   "true_positives": 1,
+   "false_positives": 0,
+   "false_negatives": 0,
+   "support": 1,
+   "precision": 1.0,
+   "recall": 1.0,
+   "f1": 1.0
+  },
+  "data_retention": {
+   "true_positives": 3,
+   "false_positives": 0,
+   "false_negatives": 2,
+   "support": 5,
+   "precision": 1.0,
+   "recall": 0.6,
+   "f1": 0.75
+  },
+  "disallowed_permission": {
+   "true_positives": 2,
+   "false_positives": 0,
+   "false_negatives": 0,
+   "support": 2,
+   "precision": 1.0,
+   "recall": 1.0,
+   "f1": 1.0
+  },
+  "model_training": {
+   "true_positives": 4,
+   "false_positives": 0,
+   "false_negatives": 0,
+   "support": 4,
+   "precision": 1.0,
+   "recall": 1.0,
+   "f1": 1.0
+  },
+  "third_party_sharing": {
+   "true_positives": 7,
+   "false_positives": 1,
+   "false_negatives": 6,
+   "support": 13,
+   "precision": 0.875,
+   "recall": 0.5385,
+   "f1": 0.6667
+  },
+  "tracking_profiling": {
+   "true_positives": 3,
+   "false_positives": 0,
+   "false_negatives": 4,
+   "support": 7,
+   "precision": 1.0,
+   "recall": 0.4286,
+   "f1": 0.6
+  }
+ },
+ "_note": "Recorded baseline for the rule matcher. A change that moves these is fine, but it must be deliberate and updated in the same commit. Regenerate with: python -m tests.evaluation --json"
+}
