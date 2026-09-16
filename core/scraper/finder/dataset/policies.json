@@ -851,59 +851,6 @@
     "country": "GLOBAL"
   },
   {
-    "id": "unknownstartup",
-    "name": "Unknownstartup",
-    "aliases": [
-      "https://unknownstartup.io"
-    ],
-    "domain": "unknownstartup.io",
-    "privacy_url": "https://unknownstartup.io/legal/privacy-policy",
-    "category": "auto_discovered",
-    "country": "GLOBAL"
-  },
-  {
-    "id": "payoneer",
-    "name": "Payoneer",
-    "aliases": [],
-    "domain": "payoneer.com",
-    "privacy_url": "https://www.payoneer.com/legal/privacy-policy/",
-    "category": "auto_discovered",
-    "country": "GLOBAL"
-  },
-  {
-    "id": "websitebeautiful",
-    "name": "Website Beautiful",
-    "aliases": [
-      "com.beatful.beatful"
-    ],
-    "domain": "websitebeautiful.com",
-    "privacy_url": "https://websitebeautiful.com/privacy-policy/",
-    "category": "auto_discovered",
-    "country": "GLOBAL"
-  },
-  {
-    "id": "www",
-    "name": "Www",
-    "aliases": [
-      "archumart"
-    ],
-    "domain": "www.archimat.io",
-    "privacy_url": "https://www.archimat.io/privacy-policy/",
-    "category": "auto_discovered",
-    "country": "GLOBAL"
-  },
-  {
-    "id": "netlify",
-    "name": "Netlify",
-    "aliases": [
-      "archumart.netlify"
-    ],
-    "domain": "www.netlify.com",
-    "privacy_url": "https://www.netlify.com/privacy/",
-    "category": "auto_discovered",
-    "country": "GLOBAL"
-  },
-  {
     "id": "google_maps",
     "name": "Google Maps",
     "aliases": [

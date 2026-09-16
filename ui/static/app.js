@@ -256,17 +256,6 @@ function initInputModes() {
     });
   });
 
-  document.querySelectorAll(".chip").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      const name = chip.dataset.name;
-      const comp = $("company-target");
-      if (comp) {
-        comp.value = name;
-        comp.focus();
-      }
-    });
-  });
-
   const compInput = $("company-target");
   if (compInput) {
     compInput.addEventListener("keydown", (event) => {

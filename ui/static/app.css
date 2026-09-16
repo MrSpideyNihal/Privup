@@ -196,33 +196,6 @@ textarea:focus,
   font-size: .875rem;
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: .4rem;
-  margin-top: .75rem;
-  padding: 0 .2rem;
-}
-
-.chip {
-  border: 1px solid var(--hairline);
-  background: var(--sunken);
-  border-radius: var(--r-pill);
-  padding: .25rem .75rem;
-  font-size: .8rem;
-  font-weight: 550;
-  color: var(--ink-soft);
-  cursor: pointer;
-  transition: background .15s ease, color .15s ease, border-color .15s ease;
-}
-
-.chip:hover {
-  background: var(--card);
-  color: var(--ink);
-  border-color: var(--ink-faint);
-}
-
 .composer-foot {
   display: flex;
   align-items: center;
