@@ -155,7 +155,8 @@ h1 {
   padding: 0 .4rem .45rem;
 }
 
-textarea {
+textarea,
+.input-line {
   width: 100%;
   border: 1px solid var(--hairline);
   background: var(--sunken);
@@ -163,16 +164,62 @@ textarea {
   padding: .9rem 1rem;
   font: inherit;
   color: var(--ink);
-  resize: vertical;
-  min-height: 7.5rem;
   transition: border-color .18s ease, background .18s ease;
 }
 
-textarea::placeholder { color: var(--ink-faint); }
+textarea {
+  resize: vertical;
+  min-height: 7.5rem;
+}
 
-textarea:focus {
+.input-line {
+  height: 3.25rem;
+}
+
+textarea::placeholder,
+.input-line::placeholder {
+  color: var(--ink-faint);
+}
+
+textarea:focus,
+.input-line:focus {
   outline: none;
   background: var(--card);
+  border-color: var(--ink-faint);
+}
+
+.input-modes {
+  margin-bottom: 1.1rem;
+}
+
+.input-modes button {
+  font-size: .875rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem;
+  margin-top: .75rem;
+  padding: 0 .2rem;
+}
+
+.chip {
+  border: 1px solid var(--hairline);
+  background: var(--sunken);
+  border-radius: var(--r-pill);
+  padding: .25rem .75rem;
+  font-size: .8rem;
+  font-weight: 550;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.chip:hover {
+  background: var(--card);
+  color: var(--ink);
   border-color: var(--ink-faint);
 }
 

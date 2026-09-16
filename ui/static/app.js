@@ -221,28 +221,101 @@ function render(data) {
   $("result").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
+/* ---------- input mode switcher ---------- */
+
+let currentMode = "company";
+
+function initInputModes() {
+  const modesHolder = $("input-modes");
+  if (!modesHolder) return;
+
+  const tabs = modesHolder.querySelectorAll(".mode-tab");
+  const sectionCompany = $("section-company");
+  const sectionText = $("section-text");
+  const hint = $("input-hint");
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const mode = tab.dataset.mode;
+      currentMode = mode;
+      tabs.forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
+
+      if (mode === "company") {
+        sectionCompany.hidden = false;
+        sectionText.hidden = true;
+        hint.textContent = "Finds and verifies the official privacy policy using Privacy URL Finder.";
+        const comp = $("company-target");
+        if (comp) comp.focus();
+      } else {
+        sectionCompany.hidden = true;
+        sectionText.hidden = false;
+        hint.textContent = "A link is fetched and followed; pasted text is read directly on this machine.";
+        const tgt = $("target");
+        if (tgt) tgt.focus();
+      }
+    });
+  });
+
+  document.querySelectorAll(".chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const name = chip.dataset.name;
+      const comp = $("company-target");
+      if (comp) {
+        comp.value = name;
+        comp.focus();
+      }
+    });
+  });
+
+  const compInput = $("company-target");
+  if (compInput) {
+    compInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") analyze(event);
+    });
+  }
+}
+
 /* ---------- submit ---------- */
 
 async function analyze(event) {
   event.preventDefault();
 
-  const target = $("target").value.trim();
-  if (!target) {
-    setStatus("Paste a policy, a link to one, or a company/app name.", "error");
-    return;
+  let target = "";
+  let driver = null;
+
+  if (currentMode === "company") {
+    target = ($("company-target") ? $("company-target").value : "").trim();
+    if (!target) {
+      setStatus("Enter a company, app name, or Android package.", "error");
+      return;
+    }
+    driver = "company";
+  } else {
+    target = ($("target") ? $("target").value : "").trim();
+    if (!target) {
+      setStatus("Paste a policy, or a link to one.", "error");
+      return;
+    }
   }
 
   const button = $("analyze");
   button.disabled = true;
-  button.textContent = "Reading";
+  button.textContent = currentMode === "company" ? "Searching" : "Reading";
   $("result").hidden = true;
-  setStatus("Reading the document on this machine.");
+  setStatus(
+    currentMode === "company"
+      ? `Discovering and verifying privacy policy for "${target}"...`
+      : "Reading the document on this machine."
+  );
 
   try {
+    const payload = { target, tags: currentTags };
+    if (driver) payload.driver = driver;
+
     const response = await fetch("/api/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ target, tags: currentTags }),
+      body: JSON.stringify(payload),
     });
     const data = await response.json();
 
@@ -267,4 +340,5 @@ $("target").addEventListener("keydown", (event) => {
   if ((event.metaKey || event.ctrlKey) && event.key === "Enter") analyze(event);
 });
 
+initInputModes();
 loadTagSets();

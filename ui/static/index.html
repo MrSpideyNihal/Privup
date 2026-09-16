@@ -34,15 +34,44 @@
   <form class="composer" id="composer" novalidate>
     <div class="segmented" role="radiogroup" aria-label="Rule set" id="tagset"></div>
 
-    <label class="field">
-      <span class="field-label" id="input-label">Policy text, or a link to it or name!</span>
-      <textarea id="target" rows="6" spellcheck="false"
-                aria-describedby="input-hint"
-                placeholder="Paste the policy here, a link such as example.com/privacy, or a company/app name such as maps"></textarea>
-    </label>
+    <div class="segmented input-modes" role="tablist" aria-label="Input mode" id="input-modes">
+      <button type="button" role="tab" class="mode-tab" id="tab-company" aria-selected="true" data-mode="company">
+        Company / App Name
+      </button>
+      <button type="button" role="tab" class="mode-tab" id="tab-text" aria-selected="false" data-mode="text">
+        Policy Text or Direct Link
+      </button>
+    </div>
+
+    <!-- Section 1: Company / App Name -->
+    <div class="input-section" id="section-company">
+      <label class="field" for="company-target">
+        <span class="field-label" id="company-label">Company or App Name</span>
+        <input type="text" id="company-target" class="input-line" spellcheck="false"
+               aria-describedby="input-hint"
+               placeholder="Enter company, app name, or Android package (e.g. maps, KreditBee, Swiggy)">
+      </label>
+      <div class="chips" role="group" aria-label="Suggested examples">
+        <button type="button" class="chip" data-name="maps">Google Maps</button>
+        <button type="button" class="chip" data-name="KreditBee">KreditBee</button>
+        <button type="button" class="chip" data-name="Swiggy">Swiggy</button>
+        <button type="button" class="chip" data-name="Navi">Navi</button>
+        <button type="button" class="chip" data-name="Kissht">Kissht</button>
+      </div>
+    </div>
+
+    <!-- Section 2: Policy Text / Direct Link -->
+    <div class="input-section" id="section-text" hidden>
+      <label class="field" for="target">
+        <span class="field-label" id="input-label">Policy text, or a link to it</span>
+        <textarea id="target" rows="6" spellcheck="false"
+                  aria-describedby="input-hint"
+                  placeholder="Paste the policy here, or a link such as example.com/privacy"></textarea>
+      </label>
+    </div>
 
     <div class="composer-foot">
-      <p class="hint" id="input-hint">A link or company name is fetched and followed; text is read as-is.</p>
+      <p class="hint" id="input-hint">Finds and verifies the official privacy policy using Privacy URL Finder.</p>
       <button class="analyze" type="submit" id="analyze">Analyze</button>
     </div>
   </form>
