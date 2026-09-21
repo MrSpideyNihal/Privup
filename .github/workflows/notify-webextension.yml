@@ -1,0 +1,21 @@
+name: Notify PrivUP-WebExtension of a rule change
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "core/tags/rulesets/**"
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fire repository_dispatch at the private extension repo
+        env:
+          TOKEN: ${{ secrets.WEBEXT_DISPATCH_TOKEN }}
+        run: |
+          curl -sf -X POST \
+            -H "Authorization: token ${TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/MrSpideyNihal/PrivUP-WebExtension/dispatches \
+            -d '{"event_type":"rules-updated"}'
