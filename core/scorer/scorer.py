@@ -49,6 +49,74 @@ def _rank(finding: Finding) -> tuple[int, int]:
 	return (-finding.severity.rank, finding.clause.index)
 
 
+RULE_LABELS: dict[str, str] = {
+	"gdpr.retention.indefinite": "indefinite data retention",
+	"gdpr.retention.vague": "vague retention limits",
+	"gdpr.sharing.sale": "selling personal data",
+	"gdpr.sharing.third_party": "third-party data sharing",
+	"gdpr.tracking.profiling": "user profiling",
+	"gdpr.tracking.cross_site": "cross-site tracking",
+	"gdpr.tracking.targeted_ads": "targeted advertising",
+	"ai.training_on_user_content": "AI training on user content",
+	"gdpr.consent.bundled": "bundled agreement",
+	"gdpr.change.unilateral": "terms changed without notice",
+	"gdpr.transfer.cross_border": "overseas data transfer",
+	"gdpr.security.disclaimed": "disclaimed security liability",
+	"gdpr.optout.absent": "no opt-out or deletion options",
+	"rbi.permission.contacts": "reads phone contacts",
+	"rbi.permission.call_logs": "reads call logs",
+	"rbi.permission.sms": "reads text messages",
+	"rbi.permission.files_media": "accesses device files",
+	"rbi.permission.installed_apps": "inspects installed apps",
+	"rbi.permission.one_time_unqualified": "continuous device access",
+	"rbi.charges.interest_high": "high interest rates",
+	"rbi.charges.penal_daily": "daily penal interest",
+	"rbi.charges.non_refundable_fee": "non-refundable fees",
+	"rbi.charges.processing_fee": "processing fee deductions",
+	"rbi.charges.cooling_off_charged": "cooling-off exit fee",
+	"rbi.charges.foreclosure_penalty": "early repayment penalty",
+	"rbi.charges.undisclosed": "undisclosed open charges",
+	"rbi.recovery.third_party_agents": "third-party debt recovery",
+	"rbi.consent.no_withdrawal": "no consent withdrawal",
+	"rbi.disclosure.no_lender_named": "unnamed regulated lender",
+	"rbi.consent.bundled": "bundled consent",
+}
+
+
+def generate_headline(ordered_findings: list[Finding]) -> str | None:
+	"""Build a short human-readable summary of all findings for the verdict heading."""
+	if not ordered_findings:
+		return None
+
+	seen: set[str] = set()
+	topics: list[str] = []
+	for f in ordered_findings:
+		label = RULE_LABELS.get(f.rule_id) or (f.category.replace("_", " ") if f.category else None)
+		if label and label not in seen:
+			seen.add(label)
+			topics.append(label)
+
+	if not topics:
+		fallback = ordered_findings[0].reason.rstrip(". ") if ordered_findings[0].reason else ""
+		return fallback or "Concerns detected in policy."
+
+	if len(topics) == 1:
+		t = topics[0]
+		return t[:1].upper() + t[1:] + " flagged."
+
+	displayed = topics[:3]
+	remaining = len(topics) - len(displayed)
+	if len(displayed) == 2:
+		text = f"{displayed[0]} and {displayed[1]}"
+	else:
+		text = f"{displayed[0]}, {displayed[1]}, and {displayed[2]}"
+
+	if remaining > 0:
+		text += f" (+{remaining} more)"
+
+	return text[:1].upper() + text[1:] + "."
+
+
 class Scorer:
 	"""Produce a Verdict from a list of findings."""
 
@@ -93,6 +161,7 @@ class Scorer:
 				"severity_counts": counts,
 				"worst_severity": worst.value,
 				"categories": sorted({f.category for f in ordered}),
+				"headline": generate_headline(ordered),
 			},
 		)
 
@@ -124,7 +193,7 @@ class Scorer:
 				findings=[],
 				risk_score=0.0,
 				clauses_analyzed=0,
-				metadata={"empty_document": True},
+				metadata={"empty_document": True, "headline": "No readable policy text found here."},
 			)
 
 		return Verdict(
@@ -135,5 +204,5 @@ class Scorer:
 			findings=[],
 			risk_score=0.0,
 			clauses_analyzed=clauses_analyzed,
-			metadata={"severity_counts": {}, "categories": []},
+			metadata={"severity_counts": {}, "categories": [], "headline": "No red flags detected in this policy."},
 		)
