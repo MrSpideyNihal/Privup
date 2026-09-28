@@ -34,13 +34,9 @@ DEFAULT_USER_AGENT = (
     "Chrome/124.0.0.0 Safari/537.36"
 )
 
-# Secure (default) SSL context — used first
-_SSL_CONTEXT_SECURE = ssl.create_default_context()
-
-# Permissive SSL context — fallback for sites with bad/self-signed certificates
-_SSL_CONTEXT_PERMISSIVE = ssl.create_default_context()
-_SSL_CONTEXT_PERMISSIVE.check_hostname = False
-_SSL_CONTEXT_PERMISSIVE.verify_mode = ssl.CERT_NONE
+# Secure SSL context — the only context used.  A broken certificate is a
+# finding, not an obstacle to route around.  See GH-21.
+_SSL_CONTEXT = ssl.create_default_context()
 
 # Transient HTTP status codes that warrant a retry
 _RETRYABLE_STATUS_CODES = {500, 502, 503, 504, 429}
@@ -148,9 +144,10 @@ def fetch_url(
     max_retries: int = 1,
 ) -> Tuple[int, str, str]:
     """
-    Fetch a URL using stdlib urllib with SSL fallback and retry logic.
+    Fetch a URL using stdlib urllib with retry logic.
 
-    - Tries secure SSL context first; falls back to permissive on SSLError.
+    - Uses a single secure SSL context; SSL errors are treated as failures,
+      never silently bypassed.  See GH-21.
     - Retries once on transient errors (timeout, 5xx, connection reset).
 
     Returns: (status_code, content_text, final_url)
@@ -171,55 +168,47 @@ def fetch_url(
             logger.debug("Retry %d/%d for %s after %.1fs backoff", attempt, max_retries, url, backoff)
             time.sleep(backoff)
 
-        # Try secure SSL first, then permissive on SSLError
-        for ssl_ctx in (_SSL_CONTEXT_SECURE, _SSL_CONTEXT_PERMISSIVE):
+        try:
+            status, text, final_url = _fetch_url_once(
+                url, timeout, req_headers, head_only, max_bytes, _SSL_CONTEXT,
+            )
+            # If retryable server error, continue to next attempt
+            if status in _RETRYABLE_STATUS_CODES:
+                logger.debug("Retryable HTTP %d from %s (attempt %d)", status, url, attempt + 1)
+                last_exception = None
+                continue
+            return status, text, final_url
+
+        except ssl.SSLError as e:
+            # A broken certificate is evidence, not an obstacle to route
+            # around.  Fail immediately — do not retry.
+            logger.warning("SSL verification failed for %s: %s", url, e)
+            return 0, "", url
+
+        except urllib.error.HTTPError as e:
+            final_url = e.geturl() if hasattr(e, "geturl") else url
             try:
-                status, text, final_url = _fetch_url_once(
-                    url, timeout, req_headers, head_only, max_bytes, ssl_ctx,
-                )
-                # If retryable server error, break inner loop to retry
-                if status in _RETRYABLE_STATUS_CODES:
-                    logger.debug("Retryable HTTP %d from %s (attempt %d)", status, url, attempt + 1)
-                    last_exception = None
-                    break
-                return status, text, final_url
-
-            except ssl.SSLError as e:
-                if ssl_ctx is _SSL_CONTEXT_SECURE:
-                    logger.debug("SSL verification failed for %s, retrying with permissive context: %s", url, e)
-                    continue  # try permissive context
-                else:
-                    logger.warning("SSL error even with permissive context for %s: %s", url, e)
-                    last_exception = e
-                    break
-
-            except urllib.error.HTTPError as e:
-                final_url = e.geturl() if hasattr(e, "geturl") else url
-                try:
-                    body = e.read(100_000).decode("utf-8", errors="replace")
-                except Exception:
-                    body = ""
-                if e.code in _RETRYABLE_STATUS_CODES:
-                    logger.debug("Retryable HTTP %d from %s (attempt %d)", e.code, url, attempt + 1)
-                    last_exception = e
-                    break  # break inner SSL loop to retry
-                return e.code, body, final_url
-
-            except (socket.timeout, TimeoutError, ConnectionResetError, ConnectionError, OSError) as e:
-                # If DNS failure (domain does not exist), fail fast without retrying
-                if isinstance(e, socket.gaierror) or "getaddrinfo failed" in str(e).lower():
-                    logger.debug("DNS lookup failed for %s: %s", url, e)
-                    return 0, "", url
-                logger.debug("Transient network error for %s (attempt %d): %s", url, attempt + 1, e)
+                body = e.read(100_000).decode("utf-8", errors="replace")
+            except Exception:
+                body = ""
+            if e.code in _RETRYABLE_STATUS_CODES:
+                logger.debug("Retryable HTTP %d from %s (attempt %d)", e.code, url, attempt + 1)
                 last_exception = e
-                break  # break inner SSL loop to retry
+                continue
+            return e.code, body, final_url
 
-            except Exception as e:
-                logger.debug("Non-retryable error fetching %s: %s", url, e)
+        except (socket.timeout, TimeoutError, ConnectionResetError, ConnectionError, OSError) as e:
+            # If DNS failure (domain does not exist), fail fast without retrying
+            if isinstance(e, socket.gaierror) or "getaddrinfo failed" in str(e).lower():
+                logger.debug("DNS lookup failed for %s: %s", url, e)
                 return 0, "", url
-        else:
-            # Both SSL contexts exhausted without success — break to return failure
-            break
+            logger.debug("Transient network error for %s (attempt %d): %s", url, attempt + 1, e)
+            last_exception = e
+            continue
+
+        except Exception as e:
+            logger.debug("Non-retryable error fetching %s: %s", url, e)
+            return 0, "", url
 
     # Exhausted all retries
     if last_exception:
