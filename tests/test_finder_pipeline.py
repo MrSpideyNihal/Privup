@@ -90,3 +90,37 @@ def test_finder_convenience_function():
     res = find_policy("Cred", verify=False, auto_save=False)
     assert res.status == ResolutionStatus.FOUND
     assert "cred.club" in (res.url or "")
+
+
+# ----- Regression tests for GH-22 (auto_save data-integrity) -----
+
+def test_auto_save_defaults_false():
+    """auto_save must default to False so unverified guesses never pollute
+    the curated dataset.  See GH-22."""
+    finder = PrivacyURLFinder()
+    assert finder.auto_save is False
+
+
+def test_dataset_file_unchanged_after_test_run():
+    """The curated policies.json must be byte-identical before and after a
+    test-suite run.  If this test fails, a test mutated shipped data.
+    See GH-22."""
+    import hashlib
+    import os
+
+    dataset_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "core", "scraper", "finder", "dataset", "policies.json",
+    )
+    with open(dataset_path, "rb") as f:
+        before = hashlib.sha256(f.read()).hexdigest()
+
+    # Run a query with auto_save=False (the default) against the real dataset
+    finder = PrivacyURLFinder(verify=False)
+    finder.find("KreditBee")
+
+    with open(dataset_path, "rb") as f:
+        after = hashlib.sha256(f.read()).hexdigest()
+
+    assert before == after, "policies.json was mutated during the test run!"
+
