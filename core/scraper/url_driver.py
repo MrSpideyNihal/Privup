@@ -26,13 +26,18 @@ This driver is the only component in PrivUp that makes a network request.
 Everything downstream receives a ``DriverResult`` and cannot tell the
 difference between this and a pasted string, which is the point.
 
-A known limit, worth stating rather than discovering later: several Indian
-lending sites render their policy entirely in JavaScript and return an empty
-shell to a plain HTTP GET. Of the pages this was built against, navi.com,
-kreditbee.in and stashfin.com all do. This driver reports what it actually
-received, and the scorer turns an empty document into a Warning rather than
-an Allow. Making those pages readable needs a headless browser, which is a
-separate driver and a heavy dependency, not a change here.
+Several Indian lending sites render their policy entirely in JavaScript and
+return an empty shell to a plain HTTP GET. When that happens, this driver
+tries zero-dependency recovery before giving up:
+
+1. **Embedded framework data** — Next.js ``__NEXT_DATA__``, Nuxt, JSON-LD,
+   and Redux/Apollo preloaded state are all parsed from the same HTML
+   without executing JavaScript.
+2. **Wayback Machine** — the Internet Archive renders JavaScript when
+   crawling, so its snapshots contain fully rendered HTML.
+
+If neither produces text, the driver raises ``DriverError`` and the scorer
+turns the failure into a Warning rather than an Allow.
 """
 
 from __future__ import annotations
@@ -44,6 +49,7 @@ from core.scraper.fetcher import DEFAULT_TIMEOUT, fetch_url, normalize_url
 from core.scraper.finder import PrivacyURLFinder, ResolutionStatus
 from core.scraper.finder.utils import is_android_package
 from core.scraper.registry import register_driver
+from core.scraper.spa import is_spa_shell, recover_content
 from core.scraper.resolver import find_policy_links
 
 __all__ = ["UrlDriver", "CompanyDriver"]
@@ -90,8 +96,14 @@ class UrlDriver(Driver):
 		response = fetch_url(res.url, timeout=self.timeout)
 		text = decode(response.body, response.charset)
 
-		if not text.strip():
-			raise DriverError(f"{response.final_url} returned an empty document")
+		spa_method: str | None = None
+		if not text.strip() or is_spa_shell(text):
+			recovery = recover_content(text, url=response.final_url)
+			if recovery.recovered:
+				text = recovery.text
+				spa_method = recovery.method
+			elif not text.strip():
+				raise DriverError(f"{response.final_url} returned an empty document")
 
 		return self.build_result(
 			raw_text=text,
@@ -109,6 +121,7 @@ class UrlDriver(Driver):
 				"resolved_via": res.method,
 				"finder_title": res.title,
 				"domain": res.domain,
+				"spa_recovery": spa_method,
 			},
 		)
 
@@ -140,8 +153,14 @@ class UrlDriver(Driver):
 					response = linked
 					text = decode(linked.body, linked.charset)
 
-		if not text.strip():
-			raise DriverError(f"{response.final_url} returned an empty document")
+		spa_method: str | None = None
+		if not text.strip() or is_spa_shell(text):
+			recovery = recover_content(text, url=response.final_url)
+			if recovery.recovered:
+				text = recovery.text
+				spa_method = recovery.method
+			elif not text.strip():
+				raise DriverError(f"{response.final_url} returned an empty document")
 
 		return self.build_result(
 			raw_text=text,
@@ -153,6 +172,7 @@ class UrlDriver(Driver):
 				"status": response.status,
 				"followed_policy_link_from": followed_from,
 				"bytes": len(response.body),
+				"spa_recovery": spa_method,
 			},
 		)
 

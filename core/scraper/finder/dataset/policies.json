@@ -851,56 +851,18 @@
     "country": "GLOBAL"
   },
   {
-    "id": "unknownstartup",
-    "name": "Unknownstartup",
+    "id": "google_maps",
+    "name": "Google Maps",
     "aliases": [
-      "https://unknownstartup.io"
+      "maps",
+      "google maps",
+      "gmaps",
+      "com.google.android.apps.maps"
     ],
-    "domain": "unknownstartup.io",
-    "privacy_url": "https://unknownstartup.io/legal/privacy-policy",
-    "category": "auto_discovered",
-    "country": "GLOBAL"
-  },
-  {
-    "id": "payoneer",
-    "name": "Payoneer",
-    "aliases": [],
-    "domain": "payoneer.com",
-    "privacy_url": "https://www.payoneer.com/legal/privacy-policy/",
-    "category": "auto_discovered",
-    "country": "GLOBAL"
-  },
-  {
-    "id": "websitebeautiful",
-    "name": "Website Beautiful",
-    "aliases": [
-      "com.beatful.beatful"
-    ],
-    "domain": "websitebeautiful.com",
-    "privacy_url": "https://websitebeautiful.com/privacy-policy/",
-    "category": "auto_discovered",
-    "country": "GLOBAL"
-  },
-  {
-    "id": "www",
-    "name": "Www",
-    "aliases": [
-      "archumart"
-    ],
-    "domain": "www.archimat.io",
-    "privacy_url": "https://www.archimat.io/privacy-policy/",
-    "category": "auto_discovered",
-    "country": "GLOBAL"
-  },
-  {
-    "id": "netlify",
-    "name": "Netlify",
-    "aliases": [
-      "archumart.netlify"
-    ],
-    "domain": "www.netlify.com",
-    "privacy_url": "https://www.netlify.com/privacy/",
-    "category": "auto_discovered",
+    "domain": "google.com",
+    "privacy_url": "https://policies.google.com/privacy",
+    "terms_url": "https://policies.google.com/terms",
+    "category": "tech",
     "country": "GLOBAL"
   }
 ]

@@ -28,7 +28,8 @@ number a borrower is actually agreeing to.
 ## Status
 
 Parts 1 and 2 are complete: the core pipeline, a scriptable CLI, and a local
-web UI. Browser extension and Android are next.
+web UI. The browser extension now lives in a separate, private repository.
+Android is next.
 
 ```bash
 python -m cli scan "We access your contact list to assess creditworthiness." --tags loan_app

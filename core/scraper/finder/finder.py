@@ -54,7 +54,7 @@ class PrivacyURLFinder:
         dataset_manager: Optional[DatasetManager] = None,
         timeout: float = 6.0,
         enable_search_fallback: bool = True,
-        auto_save: bool = True,
+        auto_save: bool = False,
     ):
         self.verify = verify
         self.timeout = timeout

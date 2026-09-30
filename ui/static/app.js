@@ -1,3 +1,17 @@
+/*
+ *  ╔════════════════════════════════════════════════════════════╗
+ *  ║                                                            ║
+ *  ║                     PRIVACY-URL-FINDER                     ║
+ *  ║                                                            ║
+ *  ║                         by Nihal Rodge                     ║
+ *  ║                                                            ║
+ *  ║  GitHub: github.com/MrSpideyNihal/privacy-url-finder       ║
+ *  ║                                                            ║
+ *  ╚════════════════════════════════════════════════════════════╝
+ */
+/*
+ * This code integrates privacy-url-finder for company search and link resolution
+ */
 /* PrivUp local UI.
  *
  * Presentation only. Every judgement shown here was made by core/main.py;
@@ -26,6 +40,31 @@ const SEVERITY_ORDER = ["critical", "high", "medium", "low", "info"];
 
 let currentTags = "generic";
 
+/* ---------- sliding segmented pill indicator ---------- */
+
+function updateSegmented(container) {
+  if (!container) return;
+  let indicator = container.querySelector(".segmented-indicator");
+  if (!indicator) {
+    indicator = document.createElement("span");
+    indicator.className = "segmented-indicator";
+    indicator.setAttribute("aria-hidden", "true");
+    container.prepend(indicator);
+  }
+
+  const activeBtn = container.querySelector('[aria-checked="true"], [aria-selected="true"]');
+  if (activeBtn) {
+    const left = activeBtn.offsetLeft;
+    const width = activeBtn.offsetWidth;
+    indicator.style.transform = `translateX(${left}px)`;
+    indicator.style.width = `${width}px`;
+  }
+}
+
+window.addEventListener("resize", () => {
+  document.querySelectorAll(".segmented").forEach(updateSegmented);
+});
+
 /* ---------- rule set selector ---------- */
 
 async function loadTagSets() {
@@ -50,13 +89,17 @@ async function loadTagSets() {
 
       button.addEventListener("click", () => {
         currentTags = set.name;
-        [...holder.children].forEach((other) =>
+        [...holder.children].filter((c) => c.tagName === "BUTTON").forEach((other) =>
           other.setAttribute("aria-checked", String(other === button))
         );
+        updateSegmented(holder);
       });
       return button;
     })
   );
+
+  updateSegmented(holder);
+  requestAnimationFrame(() => updateSegmented(holder));
 }
 
 /* ---------- rendering ---------- */
@@ -194,7 +237,7 @@ function renderFindings(data) {
     ? `What it found (${findings.length})`
     : "What it found";
 
-  const source = data.driver === "url" ? data.origin : "pasted text";
+  const source = data.driver === "url" || data.driver === "company" ? data.origin : "pasted text";
   $("meta").textContent = `${data.clauses_analyzed} clauses read · ${data.rule_set} · ${source}`;
 }
 
@@ -207,28 +250,98 @@ function render(data) {
   $("result").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
+/* ---------- input mode switcher ---------- */
+
+let currentMode = "company";
+
+function initInputModes() {
+  const modesHolder = $("input-modes");
+  if (!modesHolder) return;
+
+  const tabs = modesHolder.querySelectorAll(".mode-tab");
+  const sectionCompany = $("section-company");
+  const sectionText = $("section-text");
+  const hint = $("input-hint");
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const mode = tab.dataset.mode;
+      currentMode = mode;
+      tabs.forEach((t) => {
+        const isSel = String(t === tab);
+        t.setAttribute("aria-selected", isSel);
+        t.setAttribute("aria-checked", isSel);
+      });
+      updateSegmented(modesHolder);
+
+      if (mode === "company") {
+        sectionCompany.hidden = false;
+        sectionText.hidden = true;
+        hint.textContent = "Finds and verifies the official privacy policy using Privacy URL Finder.";
+        const comp = $("company-target");
+        if (comp) comp.focus();
+      } else {
+        sectionCompany.hidden = true;
+        sectionText.hidden = false;
+        hint.textContent = "A link is fetched and followed; pasted text is read directly on this machine.";
+        const tgt = $("target");
+        if (tgt) tgt.focus();
+      }
+    });
+  });
+
+  updateSegmented(modesHolder);
+  requestAnimationFrame(() => updateSegmented(modesHolder));
+
+  const compInput = $("company-target");
+  if (compInput) {
+    compInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") analyze(event);
+    });
+  }
+}
+
 /* ---------- submit ---------- */
 
 async function analyze(event) {
   event.preventDefault();
 
-  const target = $("target").value.trim();
-  if (!target) {
-    setStatus("Paste a policy, or a link to one.", "error");
-    return;
+  let target = "";
+  let driver = null;
+
+  if (currentMode === "company") {
+    target = ($("company-target") ? $("company-target").value : "").trim();
+    if (!target) {
+      setStatus("Enter a company, app name, or Android package.", "error");
+      return;
+    }
+    driver = "company";
+  } else {
+    target = ($("target") ? $("target").value : "").trim();
+    if (!target) {
+      setStatus("Paste a policy, or a link to one.", "error");
+      return;
+    }
   }
 
   const button = $("analyze");
   button.disabled = true;
-  button.textContent = "Reading";
+  button.textContent = currentMode === "company" ? "Searching" : "Reading";
   $("result").hidden = true;
-  setStatus("Reading the document on this machine.");
+  setStatus(
+    currentMode === "company"
+      ? `Discovering and verifying privacy policy for "${target}"...`
+      : "Reading the document on this machine."
+  );
 
   try {
+    const payload = { target, tags: currentTags };
+    if (driver) payload.driver = driver;
+
     const response = await fetch("/api/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ target, tags: currentTags }),
+      body: JSON.stringify(payload),
     });
     const data = await response.json();
 
@@ -253,4 +366,5 @@ $("target").addEventListener("keydown", (event) => {
   if ((event.metaKey || event.ctrlKey) && event.key === "Enter") analyze(event);
 });
 
+initInputModes();
 loadTagSets();

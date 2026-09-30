@@ -146,3 +146,27 @@ class TestMetadata:
 		verdict = score([finding(Severity.LOW)], clauses=37)
 		assert verdict.rule_set == "generic"
 		assert verdict.clauses_analyzed == 37
+
+
+class TestHeadline:
+	def test_clean_document_headline(self):
+		verdict = score([], clauses=10)
+		assert verdict.metadata["headline"] == "No red flags detected in this policy."
+
+	def test_unreadable_document_headline(self):
+		verdict = score([], clauses=0)
+		assert verdict.metadata["headline"] == "No readable policy text found here."
+
+	def test_single_finding_headline(self):
+		verdict = score([finding(Severity.HIGH, rule_id="gdpr.sharing.third_party")])
+		assert verdict.metadata["headline"] == "Third-party data sharing flagged."
+
+	def test_multiple_findings_headline(self):
+		verdict = score([
+			finding(Severity.HIGH, rule_id="gdpr.optout.absent", index=0),
+			finding(Severity.MEDIUM, rule_id="gdpr.sharing.third_party", index=1),
+			finding(Severity.MEDIUM, rule_id="gdpr.change.unilateral", index=2),
+		])
+		assert verdict.metadata["headline"] == (
+			"No opt-out or deletion options, third-party data sharing, and terms changed without notice."
+		)
