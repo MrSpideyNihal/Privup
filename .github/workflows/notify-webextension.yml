@@ -1,10 +1,11 @@
-name: Notify PrivUP-WebExtension of a rule change
+name: Notify PrivUP-WebExtension of a rule or translation change
 
 on:
   push:
     branches: [main]
     paths:
       - "core/tags/rulesets/**"
+      - "core/translator/locales/**"
 
 jobs:
   notify:

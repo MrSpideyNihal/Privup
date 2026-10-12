@@ -40,6 +40,17 @@ const SEVERITY_ORDER = ["critical", "high", "medium", "low", "info"];
 
 let currentTags = "generic";
 
+/* UI text for the current verdict, in its language. Sent by the server with
+ * every verdict, so this page holds no translations of its own. */
+let messages = {};
+
+function t(key, fallback, values = {}) {
+  const template = messages[key] || fallback;
+  return template.replace(/\{(\w+)\}/g, (whole, name) =>
+    name in values ? String(values[name]) : whole
+  );
+}
+
 /* ---------- sliding segmented pill indicator ---------- */
 
 function updateSegmented(container) {
@@ -71,7 +82,9 @@ async function loadTagSets() {
   const holder = $("tagset");
   let sets;
   try {
-    sets = (await (await fetch("/api/tags")).json()).tag_sets;
+    const data = await (await fetch("/api/tags")).json();
+    sets = data.tag_sets;
+    loadLanguages(data.languages || []);
   } catch {
     holder.textContent = "Could not load rule sets.";
     return;
@@ -102,6 +115,22 @@ async function loadTagSets() {
   requestAnimationFrame(() => updateSegmented(holder));
 }
 
+function loadLanguages(languages) {
+  const select = $("lang");
+  select.replaceChildren(
+    ...languages.map((lang) => {
+      const option = document.createElement("option");
+      option.value = lang.code;
+      option.textContent = lang.native_name === lang.name
+        ? lang.name
+        : `${lang.native_name} (${lang.name})`;
+      return option;
+    })
+  );
+  select.value = "en";
+  select.hidden = languages.length < 2;
+}
+
 /* ---------- rendering ---------- */
 
 function setStatus(message, kind) {
@@ -116,14 +145,15 @@ function setStatus(message, kind) {
 }
 
 function renderVerdict(data) {
-  const shape = DECISION[data.decision] || DECISION.warning;
+  const decision = DECISION[data.decision] ? data.decision : "warning";
+  const shape = DECISION[decision];
 
   document.documentElement.style.setProperty("--accent", shape.tone);
-  $("verdict-kicker").textContent = shape.kicker;
+  $("verdict-kicker").textContent = t(`decision.${decision}`, shape.kicker);
   $("verdict-line").textContent =
     data.metadata && data.metadata.empty_document
-      ? "No readable policy text was found. This is not an all-clear."
-      : shape.line;
+      ? t("unreadable.empty_document", "No readable policy text was found. This is not an all-clear.")
+      : t(`decision.${decision}.line`, shape.line);
 
   const score = Number(data.risk_score) || 0;
   $("risk-score").textContent = String(Math.round(score));
@@ -140,6 +170,17 @@ function renderMismatch(data) {
   const element = $("mismatch");
   element.hidden = !notice;
   if (notice) element.textContent = notice;
+
+  // Policy quotes are never translated, so say so, and say when nobody who
+  // speaks the language has checked the translation yet.
+  const translation = data.metadata && data.metadata.translation;
+  const note = $("translation-note");
+  note.hidden = !translation;
+  if (translation) {
+    const lines = [t("ui.original_language", "")];
+    if (!translation.reviewed) lines.push(t("ui.unreviewed", ""));
+    note.textContent = lines.filter(Boolean).join(" ");
+  }
 }
 
 function renderTiles(data) {
@@ -152,7 +193,8 @@ function renderTiles(data) {
       tile.className = "tile";
       tile.style.setProperty("--tone", TONES[name]);
       tile.innerHTML =
-        `<span class="tile-label"><i class="dot"></i>${name}</span><strong></strong>`;
+        `<span class="tile-label"><i class="dot"></i></span><strong></strong>`;
+      tile.querySelector(".tile-label").append(t(`severity.${name}`, name));
       tile.querySelector("strong").textContent = String(counts[name]);
       return tile;
     })
@@ -190,7 +232,7 @@ function renderFinding(finding) {
   const summary = document.createElement("summary");
   const severity = document.createElement("span");
   severity.className = "severity";
-  severity.textContent = finding.severity;
+  severity.textContent = t(`severity.${finding.severity}`, finding.severity);
   const reason = document.createElement("span");
   reason.className = "reason";
   reason.textContent = finding.reason;
@@ -205,13 +247,18 @@ function renderFinding(finding) {
   if (isAbsence) {
     const note = document.createElement("p");
     note.className = "absence";
-    note.textContent = "Nothing anywhere in this document covers this. The finding is the absence.";
+    note.textContent = t(
+      "ui.absence",
+      "Nothing anywhere in this document covers this. The finding is the absence."
+    );
     evidence.append(note);
   } else {
     if (finding.clause.heading) {
       const where = document.createElement("p");
       where.className = "clause-where";
-      where.textContent = `Under "${finding.clause.heading}"`;
+      where.textContent = t("ui.under_heading", 'Under "{heading}"', {
+        heading: finding.clause.heading,
+      });
       evidence.append(where);
     }
     evidence.append(quoteClause(finding.clause.text, finding.matched_text));
@@ -242,6 +289,7 @@ function renderFindings(data) {
 }
 
 function render(data) {
+  messages = data.messages || {};
   renderVerdict(data);
   renderMismatch(data);
   renderTiles(data);
@@ -335,7 +383,7 @@ async function analyze(event) {
   );
 
   try {
-    const payload = { target, tags: currentTags };
+    const payload = { target, tags: currentTags, lang: $("lang").value || "en" };
     if (driver) payload.driver = driver;
 
     const response = await fetch("/api/analyze", {

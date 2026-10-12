@@ -156,15 +156,23 @@ class RuleAnalyzer(BaseAnalyzer):
 
 		severity = rule.severity
 		reason_template = rule.reason
+		reason_variant = "reason"
 		hedge = _first_match(rule.hedges, text) if rule.hedges else None
 		if hedge is not None and rule.hedge_severity is not None:
 			severity = rule.hedge_severity
-			reason_template = rule.hedge_reason or rule.reason
+			if rule.hedge_reason:
+				reason_template = rule.hedge_reason
+				reason_variant = "hedge_reason"
 			values["hedge"] = hedge
 
 		metadata = dict(rule.metadata)
 		if hedge is not None:
 			metadata["hedged_by"] = hedge
+		# Which template produced the reason and what was substituted into
+		# it, so core/translator can fill the same template in another
+		# language without re-reading the clause.
+		metadata["reason_variant"] = reason_variant
+		metadata["reason_values"] = dict(values)
 		if rule_set.metadata.get("dla_directory") is not None:
 			metadata["dla_directory"] = hook_result
 
@@ -204,6 +212,8 @@ class RuleAnalyzer(BaseAnalyzer):
 
 			metadata = dict(rule.metadata)
 			metadata["scope"] = Scope.DOCUMENT_ABSENT
+			metadata["reason_variant"] = "reason"
+			metadata["reason_values"] = {}
 			if rule_set.metadata.get("dla_directory") is not None:
 				metadata["dla_directory"] = hook_result
 

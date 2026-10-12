@@ -33,6 +33,12 @@ from core.main import run
 from core.models import Decision
 from core.scraper import DriverError, UnknownDriverError, available_drivers, describe_drivers
 from core.tags import UnknownTagSetError, available_tag_sets, describe_tag_sets
+from core.translator import (
+	SOURCE_LANGUAGE,
+	UnknownLanguageError,
+	available_languages,
+	describe_languages,
+)
 from cli.format import render_text
 
 __all__ = ["build_parser", "main"]
@@ -49,11 +55,12 @@ exit status:
   0  allow or warning
   1  deny
   2  bad usage
-  3  could not complete the check (unreachable target, unknown driver or rule set)
+  3  could not complete the check (unreachable target, unknown driver, rule set or language)
 
 examples:
   privup scan "We access your contact list." --tags loan_app
   privup scan https://example.com --driver url --tags generic --format json
+  privup scan "We access your contact list." --tags loan_app --lang mr
   cat policy.txt | privup scan - --tags generic
   privup --list-tags
 """
@@ -79,6 +86,11 @@ def build_parser() -> argparse.ArgumentParser:
 		"--list-drivers",
 		action="store_true",
 		help="list available drivers and exit",
+	)
+	parser.add_argument(
+		"--list-languages",
+		action="store_true",
+		help="list languages a verdict can be shown in and exit",
 	)
 
 	subparsers = parser.add_subparsers(dest="command")
@@ -111,6 +123,16 @@ def build_parser() -> argparse.ArgumentParser:
 		default="text",
 		choices=["text", "json"],
 		help="output format (default: text)",
+	)
+	scan.add_argument(
+		"--lang",
+		default=SOURCE_LANGUAGE,
+		choices=available_languages(),
+		metavar="CODE",
+		help=(
+			f"language to show the verdict in, one of {{{','.join(available_languages())}}} "
+			f"(default: {SOURCE_LANGUAGE}). Policy quotes stay in their original language."
+		),
 	)
 	scan.add_argument(
 		"--verbose",
@@ -152,14 +174,30 @@ def _list(pairs, stream) -> int:
 	return EXIT_OK
 
 
+def _language_rows() -> list[tuple[str, str]]:
+	rows = []
+	for lang in describe_languages():
+		status = "" if lang["reviewed"] else ", not yet reviewed by a native speaker"
+		rows.append((lang["code"], f"{lang['name']} ({lang['native_name']}{status})"))
+	return rows
+
+
 def main(argv: Sequence[str] | None = None) -> int:
 	parser = build_parser()
 	args = parser.parse_args(argv)
+
+	# A Windows pipe defaults to cp1252, which cannot encode Devanagari or
+	# any other Indic script, so a translated verdict would crash on print.
+	for stream in (sys.stdout, sys.stderr):
+		if hasattr(stream, "reconfigure") and (stream.encoding or "").lower() != "utf-8":
+			stream.reconfigure(encoding="utf-8")
 
 	if args.list_tags:
 		return _list(list(describe_tag_sets()), sys.stdout)
 	if args.list_drivers:
 		return _list(list(describe_drivers()), sys.stdout)
+	if args.list_languages:
+		return _list(_language_rows(), sys.stdout)
 
 	if args.command != "scan":
 		parser.print_help()
@@ -167,8 +205,8 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 	try:
 		target = _read_target(args.target)
-		verdict = run(args.driver, target, args.tags)
-	except (UnknownDriverError, UnknownTagSetError) as exc:
+		verdict = run(args.driver, target, args.tags, language=args.lang)
+	except (UnknownDriverError, UnknownTagSetError, UnknownLanguageError) as exc:
 		# KeyError stringifies with quotes around the whole message.
 		print(f"privup: {exc.args[0]}", file=sys.stderr)
 		return EXIT_ERROR
