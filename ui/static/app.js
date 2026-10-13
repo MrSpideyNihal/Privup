@@ -157,6 +157,7 @@ function renderVerdict(data) {
 
   const score = Number(data.risk_score) || 0;
   $("risk-score").textContent = String(Math.round(score));
+  $("risk-label").textContent = t("ui.risk", "risk");
 
   // 2 * pi * r, r = 34.
   const circumference = 213.6;
@@ -280,12 +281,16 @@ function renderFindings(data) {
   const findings = data.findings || [];
   $("findings").replaceChildren(...findings.map(renderFinding));
   $("empty").hidden = findings.length > 0;
+  $("empty").textContent = t("decision.allow.line", "Nothing in this document matched a red flag.");
   $("findings-title").textContent = findings.length
-    ? `What it found (${findings.length})`
-    : "What it found";
+    ? t("ui.findings_title_count", "What it found ({n})", { n: findings.length })
+    : t("ui.findings_title", "What it found");
 
-  const source = data.driver === "url" || data.driver === "company" ? data.origin : "pasted text";
-  $("meta").textContent = `${data.clauses_analyzed} clauses read · ${data.rule_set} · ${source}`;
+  const source = data.driver === "url" || data.driver === "company"
+    ? data.origin
+    : t("ui.pasted_text", "pasted text");
+  const read = t("ui.clauses_read", "{n} clauses read", { n: data.clauses_analyzed });
+  $("meta").textContent = `${read} · ${data.rule_set} · ${source}`;
 }
 
 function render(data) {

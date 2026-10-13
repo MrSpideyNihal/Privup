@@ -347,6 +347,9 @@ lookup on the device. No model, no download, no network call, and it runs the
 same on a laptop and on the cheapest Android phone.
 
 Catalogs live in `core/translator/locales/`, one JSON file per language code.
+Shipped: English, Hindi, Marathi, Tamil, Telugu, Kannada, Malayalam, Bengali
+and Gujarati. Hindi and Marathi have been reviewed by native speakers; the
+others are drafts until they are.
 `en.json` defines every message key. A rule's English text is not in it,
 because the rule set stays the one definition of a rule.
 
@@ -368,7 +371,9 @@ because the rule set stays the one definition of a rule.
 ```
 
 What is translated: `Verdict.reasons`, each `Finding.reason`, the headline,
-the relevance notice, and every fixed string a front end shows. What is not:
+the relevance notice, and every fixed string a front end shows. Front-end
+strings live in the same catalogs (`ui.*` for result screens, `options.*` for
+the extension's settings page), so the Android app can use the same keys. What is not:
 clause text, matched text, headings, citations and rule ids. A wrong
 translation of a reason is a bad explanation; a wrong translation of a clause
 would change what the user believes the policy says. The English reason is
