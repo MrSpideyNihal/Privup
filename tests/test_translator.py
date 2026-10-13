@@ -160,7 +160,7 @@ class TestTranslate:
 		assert contacts.reason == get_catalog("mr").rule_text("rbi.permission.contacts", "reason")
 		assert contacts.reason in translated.reasons
 		assert translated.metadata["translation"] == {
-			"language": "mr", "reviewed": False, "complete": True, "fallback": [],
+			"language": "mr", "reviewed": True, "complete": True, "fallback": [],
 		}
 
 	def test_numbers_are_the_same_numbers(self):

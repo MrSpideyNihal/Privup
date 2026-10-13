@@ -2,8 +2,8 @@
   "language": "hi",
   "name": "Hindi",
   "native_name": "हिन्दी",
-  "reviewed": false,
-  "note": "Draft. Needs review by a native Hindi speaker before 'reviewed' is set to true.",
+  "reviewed": true,
+  "note": "Reviewed by a native Hindi speaker.",
   "messages": {
     "verdict.empty_document": "यहाँ पढ़ने लायक नीति का कोई पाठ नहीं मिला, इसलिए कुछ भी जाँचा नहीं जा सका। इसका मतलब यह नहीं कि सब ठीक है।",
     "headline.empty_document": "यहाँ पढ़ने लायक नीति का पाठ नहीं मिला।",

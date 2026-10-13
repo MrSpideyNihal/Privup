@@ -2,8 +2,8 @@
   "language": "mr",
   "name": "Marathi",
   "native_name": "मराठी",
-  "reviewed": false,
-  "note": "Draft. Needs review by a native Marathi speaker before 'reviewed' is set to true.",
+  "reviewed": true,
+  "note": "Reviewed by a native Marathi speaker.",
   "messages": {
     "verdict.empty_document": "येथे वाचता येईल असा धोरणाचा मजकूर सापडला नाही, त्यामुळे काहीही तपासता आले नाही. याचा अर्थ सर्व काही ठीक आहे असा नाही.",
     "headline.empty_document": "येथे वाचता येईल असा धोरणाचा मजकूर सापडला नाही.",
