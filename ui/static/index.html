@@ -65,6 +65,7 @@
 
     <div class="composer-foot">
       <p class="hint" id="input-hint">Finds and verifies the official privacy policy using Privacy URL Finder.</p>
+      <select class="lang" id="lang" aria-label="Language for the verdict" hidden></select>
       <button class="analyze" type="submit" id="analyze">Analyze</button>
     </div>
   </form>
@@ -85,12 +86,13 @@
         </svg>
         <div class="gauge-readout">
           <strong id="risk-score">0</strong>
-          <span>risk</span>
+          <span id="risk-label">risk</span>
         </div>
       </div>
     </article>
 
     <p class="mismatch" id="mismatch" hidden></p>
+    <p class="translation-note" id="translation-note" hidden></p>
 
     <div class="tiles" id="tiles"></div>
 

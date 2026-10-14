@@ -128,7 +128,7 @@ class TestTextFormat:
 
 	def test_an_allow_says_so_plainly(self, capsys):
 		_, out, _ = invoke(["scan", CLEAN_TEXT, "--tags", "generic"], capsys)
-		assert "No red flags matched." in flat(out)
+		assert "Nothing in this text matched a red flag." in flat(out)
 
 
 class TestJsonFormat:

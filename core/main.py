@@ -8,8 +8,9 @@
 Pipeline orchestration.
 
 	driver.fetch()  ->  summarizer.clean()  ->  analyzer.classify()  ->  scorer.score()
+	                                                                      ->  translator.translate()
 
-This module wires four stages together and does nothing else. It holds no
+This module wires the stages together and does nothing else. It holds no
 knowledge of HTTP, of HTML, of RBI, or of what a red flag is. Adding a driver
 or a rule set does not change this file, which is the property that makes the
 rest of the design worth having.
@@ -39,6 +40,7 @@ from core.scraper import available_drivers, get_driver
 from core.summarizer.simple import SimpleSummarizer
 from core.tags import available_tag_sets, get_tag_set
 from core.tags.relevance import check_relevance
+from core.translator import SOURCE_LANGUAGE, get_catalog, translate
 
 __all__ = ["run", "run_pipeline"]
 
@@ -48,6 +50,7 @@ def run(
 	target: str,
 	tag_set_name: str,
 	analyzer: Classifier | None = None,
+	language: str = SOURCE_LANGUAGE,
 ) -> Verdict:
 	"""Analyze ``target`` with ``driver_name`` against ``tag_set_name``.
 
@@ -56,13 +59,20 @@ def run(
 	stage after this one takes ``Finding`` objects and cannot tell the
 	difference, which is the point of the seam.
 
-	Raises ``UnknownDriverError`` or ``UnknownTagSetError`` for a bad name,
+	``language`` rewrites what the user reads into that language once the
+	verdict is decided. It cannot change the decision: translation runs last.
+
+	Raises ``UnknownDriverError``, ``UnknownTagSetError`` or
+	``UnknownLanguageError`` for a bad name,
 	and ``DriverError`` when the target cannot be read. Those are surfaced
 	rather than swallowed: a caller that asked for a check and silently got
 	an Allow because the fetch failed has been actively misled.
 	"""
 	driver = get_driver(driver_name)
 	rule_set = get_tag_set(tag_set_name)
+	if language != SOURCE_LANGUAGE:
+		# Fail on a bad language before fetching anything, not after.
+		get_catalog(language)
 	classifier = analyzer or default_analyzer()
 
 	result = driver.fetch(target)
@@ -87,6 +97,9 @@ def run(
 			verdict,
 			metadata={**verdict.metadata, "relevance": relevance.to_dict()},
 		)
+
+	if language != SOURCE_LANGUAGE:
+		verdict = translate(verdict, language)
 
 	return verdict
 

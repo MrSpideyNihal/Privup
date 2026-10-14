@@ -4,8 +4,8 @@ Everything runs on the device. The only outbound request in the whole
 pipeline happens inside a driver's `fetch()`.
 
 ```
-target ──▶ driver.fetch() ──▶ summarizer.clean() ──▶ analyzer.classify() ──▶ scorer.score() ──▶ Verdict
-           DriverResult        list[Clause]          list[Finding]           Verdict
+target ──▶ driver.fetch() ──▶ summarizer.clean() ──▶ analyzer.classify() ──▶ scorer.score() ──▶ translator.translate() ──▶ Verdict
+           DriverResult        list[Clause]          list[Finding]           Verdict          Verdict, in the user's language
 ```
 
 `core/main.py` wires those four together and does nothing else:
@@ -327,6 +327,81 @@ are deliberately absent from `loan_app`, because "legitimate interest",
 policies and would make the notice useless. A rule set that declares no
 `relevance` block always applies, which is correct for `generic`.
 
+## Languages
+
+A verdict can be shown in the user's own language:
+
+```bash
+python -m cli scan "We access your contact list." --tags loan_app --lang mr
+python -m cli --list-languages
+```
+
+```python
+verdict = run("raw_text", text, "loan_app", language="mr")
+```
+
+Everything PrivUp says is written in advance: each rule's `reason`,
+`hedge_reason` and headline `label`, plus a short list of fixed messages.
+Nothing is generated at runtime. So translating a verdict is a dictionary
+lookup on the device. No model, no download, no network call, and it runs the
+same on a laptop and on the cheapest Android phone.
+
+Catalogs live in `core/translator/locales/`, one JSON file per language code.
+Shipped: English, Hindi, Marathi, Tamil, Telugu, Kannada, Malayalam, Bengali
+and Gujarati. Hindi and Marathi have been reviewed by native speakers; the
+others are drafts until they are.
+`en.json` defines every message key. A rule's English text is not in it,
+because the rule set stays the one definition of a rule.
+
+```json
+{
+  "language": "mr",
+  "name": "Marathi",
+  "native_name": "मराठी",
+  "reviewed": false,
+  "messages": { "decision.deny": "स्वीकारू नका", "...": "..." },
+  "rule_sets": { "loan_app": { "relevance_notice": "..." } },
+  "rules": {
+    "rbi.charges.penal_daily": {
+      "label": "रोजचे दंडात्मक व्याज",
+      "reason": "उशिरा भरल्यास रोज शुल्क लागते, जे वर्षाला सुमारे {annualised}% इतके होते. ..."
+    }
+  }
+}
+```
+
+What is translated: `Verdict.reasons`, each `Finding.reason`, the headline,
+the relevance notice, and every fixed string a front end shows. Front-end
+strings live in the same catalogs (`ui.*` for result screens, `options.*` for
+the extension's settings page), so the Android app can use the same keys. What is not:
+clause text, matched text, headings, citations and rule ids. A wrong
+translation of a reason is a bad explanation; a wrong translation of a clause
+would change what the user believes the policy says. The English reason is
+kept on `Finding.metadata["source_reason"]`.
+
+Reasons are rebuilt from the rule id, the template the analyzer used
+(`metadata["reason_variant"]`) and the values it substituted
+(`metadata["reason_values"]`), not by translating the English sentence, so a
+figure like `{annualised}` is exactly the same number in every language. The
+headline is rebuilt from per-language templates because word order differs.
+
+Anything a catalog lacks stays in English and is listed in
+`Verdict.metadata["translation"]["fallback"]`. Tests fail if a catalog is
+missing a rule or message, has one that no longer exists, or drops a
+placeholder, so adding a rule tells you exactly which languages need a line.
+
+### Adding a language
+
+1. Copy `hi.json` to `<code>.json` and set `language`, `name`, `native_name`.
+2. Translate every value. Keep `{placeholders}` exactly as they are.
+3. Leave `"reviewed": false` until a native speaker has read every line. Front
+   ends say so to the user while it is false.
+4. `python -m pytest tests/test_translator.py`.
+
+A translation model such as IndicTrans2 (MIT) can produce the first draft,
+offline. Never call one at runtime: that would send the user's text off the
+device.
+
 ## Shipped rule sets
 
 | Name | Covers |
@@ -397,6 +472,7 @@ provenance("loan_charges_kissht_tou.txt")          # source URL, retrieval date
 ## Constraints for this phase
 
 - Rule-based only. No ML classification yet.
+- Translation is a lookup in shipped catalogs, never a runtime model or API.
 - No network calls anywhere except inside a driver's `fetch()`.
 - Each module imports from `core/models/` and its own peers only.
 - New dependencies must be MIT or Apache 2.0. There are currently none.
@@ -464,9 +540,11 @@ The browser extension is a Manifest V3 JavaScript port of the pipeline. It
 now lives in its own private repository, separate from this public core repo.
 
 `core/tags/rulesets/*.json` remains the single source of truth for what counts
-as a privacy red flag. When a rule set changes here, a CI workflow
+as a privacy red flag, and `core/translator/locales/*.json` for what it is
+called in each language. When either changes here, a CI workflow
 automatically notifies the extension repo, which pulls the updated JSON and
-regenerates its own `src/core/rulesets.generated.js` mirror. A daily scheduled
+regenerates its own `src/core/rulesets.generated.js` and
+`src/core/locales.generated.js` mirrors. A daily scheduled
 run acts as a safety net in case a notification is missed.
 
 Adding a rule is still one JSON file in this repo, and it takes effect on both

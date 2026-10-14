@@ -41,10 +41,16 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from core.main import run
-from core.models import Decision
 from core.scraper import DriverError, UnknownDriverError
 from core.scraper.finder.utils import is_android_package
 from core.tags import UnknownTagSetError, describe_tag_sets
+from core.translator import (
+	SOURCE_LANGUAGE,
+	UnknownLanguageError,
+	describe_languages,
+	message,
+	messages,
+)
 
 __all__ = ["build_server", "serve", "guess_driver", "analyze"]
 
@@ -114,18 +120,24 @@ def guess_driver(target: str) -> str:
 	return "raw_text"
 
 
-def analyze(target: str, tag_set: str, driver: str | None = None) -> dict:
-	"""Run the pipeline and shape the result for the browser."""
+def analyze(
+	target: str,
+	tag_set: str,
+	driver: str | None = None,
+	language: str = SOURCE_LANGUAGE,
+) -> dict:
+	"""Run the pipeline and shape the result for the browser.
+
+	The page's own text comes back with the verdict, in the same language,
+	so the page holds no strings of its own to keep in sync with core.
+	"""
 	chosen = driver or guess_driver(target)
-	verdict = run(chosen, target, tag_set)
+	verdict = run(chosen, target, tag_set, language=language)
 
 	payload = verdict.to_dict()
 	payload["driver"] = chosen
-	payload["decision_label"] = {
-		Decision.ALLOW: "Allow",
-		Decision.WARNING: "Warning",
-		Decision.DENY: "Deny",
-	}[verdict.decision]
+	payload["decision_label"] = message(verdict.language, f"decision.{verdict.decision.value}")
+	payload["messages"] = messages(verdict.language)
 	return payload
 
 
@@ -178,7 +190,8 @@ class _Handler(BaseHTTPRequestHandler):
 				"tag_sets": [
 					{"name": name, "description": description, "rules": count}
 					for name, description, count in describe_tag_sets()
-				]
+				],
+				"languages": describe_languages(),
 			})
 			return
 
@@ -216,14 +229,15 @@ class _Handler(BaseHTTPRequestHandler):
 		target = str(request.get("target") or "")
 		tag_set = str(request.get("tags") or "generic")
 		driver = request.get("driver") or None
+		language = str(request.get("lang") or SOURCE_LANGUAGE)
 
 		if not target.strip():
 			self._error(400, "Paste a policy, a link to one, or a company/app name.")
 			return
 
 		try:
-			self._json(200, analyze(target, tag_set, driver))
-		except (UnknownDriverError, UnknownTagSetError) as exc:
+			self._json(200, analyze(target, tag_set, driver, language))
+		except (UnknownDriverError, UnknownTagSetError, UnknownLanguageError) as exc:
 			self._error(400, str(exc.args[0]))
 		except DriverError as exc:
 			self._error(502, str(exc))

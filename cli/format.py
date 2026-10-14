@@ -14,6 +14,7 @@ import shutil
 import textwrap
 
 from core.models import Decision, Finding, Verdict
+from core.translator import message
 
 __all__ = ["render_text", "render_json_ready", "DECISION_LABELS"]
 
@@ -23,13 +24,17 @@ DECISION_LABELS: dict[Decision, str] = {
 	Decision.DENY: "DENY",
 }
 
-# A short line under the badge saying what the verdict means, because
-# "WARNING" on its own does not tell anyone what to do.
-_DECISION_BLURB: dict[Decision, str] = {
-	Decision.ALLOW: "Nothing in this document matched a red flag.",
-	Decision.WARNING: "Read these before you agree.",
-	Decision.DENY: "Do not agree to this without reading it in full.",
-}
+
+def _label(verdict: Verdict) -> str:
+	"""The decision in the verdict's language. Upper-cased, which is a no-op
+	for scripts without case, so English output is unchanged."""
+	return message(verdict.language, f"decision.{verdict.decision.value}").upper()
+
+
+def _blurb(verdict: Verdict) -> str:
+	"""A short line saying what the verdict means, because "WARNING" on its
+	own does not tell anyone what to do."""
+	return message(verdict.language, f"decision.{verdict.decision.value}.line")
 
 _ANSI = {
 	Decision.ALLOW: "\033[32m",
@@ -70,10 +75,10 @@ def render_text(
 	columns = _width(width)
 	lines: list[str] = []
 
-	label = DECISION_LABELS[verdict.decision]
+	label = _label(verdict)
 	if color:
 		label = f"{_ANSI[verdict.decision]}{label}{_RESET}"
-	lines.append(f"{label}  {_DECISION_BLURB[verdict.decision]}")
+	lines.append(f"{label}  {_blurb(verdict)}")
 
 	summary = (
 		f"{verdict.origin}  |  rule set: {verdict.rule_set}  |  "
@@ -86,12 +91,12 @@ def render_text(
 	notice = (verdict.metadata.get("relevance") or {}).get("notice")
 	if notice:
 		lines.append("")
-		lines.extend(_wrap(f"Note: {notice}", columns, ""))
+		lines.extend(_wrap(message(verdict.language, "ui.note", notice=notice), columns, ""))
 
 	lines.append("")
 
 	if not verdict.reasons:
-		lines.append("No red flags matched.")
+		lines.append(message(verdict.language, "ui.no_red_flags"))
 		return "\n".join(lines)
 
 	# Reasons and findings are ordered identically by the scorer, so a

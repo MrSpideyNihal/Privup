@@ -260,6 +260,19 @@ textarea:focus,
   transition: transform .12s ease, opacity .18s ease;
 }
 
+.lang {
+  flex: none;
+  margin-left: auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-pill);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: .875rem;
+  padding: .6rem 1rem;
+  cursor: pointer;
+}
+
 .analyze:hover { opacity: .88; }
 .analyze:active { transform: scale(.98); }
 .analyze[disabled] { opacity: .45; cursor: progress; }
@@ -359,6 +372,13 @@ textarea:focus,
   color: var(--ink-soft);
   font-size: .9375rem;
   box-shadow: var(--lift-low);
+}
+
+.translation-note {
+  margin: .6rem 0 0;
+  padding: 0 .4rem;
+  color: var(--ink-faint);
+  font-size: .8125rem;
 }
 
 /* ---------- severity tiles ---------- */

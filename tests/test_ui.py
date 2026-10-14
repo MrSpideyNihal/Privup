@@ -154,6 +154,30 @@ class TestAnalyzeEndpoint:
 		assert payload["decision_label"] == "Deny"
 		assert payload["driver"] == "raw_text"
 
+	def test_answers_in_the_requested_language(self, base_url):
+		status, payload = post_json(
+			base_url + "/api/analyze", {"target": LENDER_TEXT, "tags": "loan_app", "lang": "mr"}
+		)
+		assert status == 200
+		assert payload["decision"] == "deny"
+		assert payload["language"] == "mr"
+		assert payload["decision_label"] == payload["messages"]["decision.deny"] != "Deny"
+		assert payload["metadata"]["translation"]["language"] == "mr"
+
+	def test_an_unknown_language_is_a_bad_request(self, base_url):
+		status, payload = post_json(
+			base_url + "/api/analyze",
+			{"target": LENDER_TEXT, "tags": "loan_app", "lang": "xx"},
+			expect_error=True,
+		)
+		assert status == 400
+		assert "xx" in payload["error"]
+
+	def test_tags_endpoint_lists_languages(self, base_url):
+		_, body, _ = get(base_url + "/api/tags")
+		codes = {lang["code"] for lang in json.loads(body)["languages"]}
+		assert {"en", "hi", "mr"} <= codes
+
 	def test_every_finding_carries_what_the_row_needs_to_expand(self, base_url):
 		"""Collapsed shows the reason; expanded shows the clause behind it."""
 		_, payload = post_json(

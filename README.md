@@ -43,6 +43,14 @@ risk 76/100 from 3 finding(s) across 1 clause(s), rule set 'loan_app'
   - This app never names the regulated bank or NBFC actually lending the money. You are entitled to know who your lender is.
 ```
 
+The same verdict in Marathi, or any language with a catalog in
+`core/translator/locales/`. Translation is a lookup on the device, not a
+model, so it is instant and sends nothing anywhere:
+
+```bash
+python -m cli scan "We access your contact list." --tags loan_app --lang mr
+```
+
 Also works on a URL, and follows the policy link if you give it a homepage:
 
 ```bash
