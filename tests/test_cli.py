@@ -242,3 +242,15 @@ class TestRunsAsASubprocess:
 			cwd=REPO_ROOT, input="", capture_output=True, text=True, timeout=60,
 		)
 		assert completed.returncode == EXIT_ERROR
+
+
+class TestAllowWithNotes:
+	def test_an_allow_with_notes_does_not_say_nothing_matched(self, capsys):
+		status, out, _ = invoke(
+			["scan", load_text("generic_proton.txt"), "--tags", "generic"], capsys
+		)
+		assert status == EXIT_OK
+		assert out.startswith("ALLOW")
+		assert "Nothing in this document matched a red flag." not in out
+		assert "worth knowing" in out
+		assert "- " in out, "the notes themselves are still listed"

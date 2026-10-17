@@ -32,9 +32,39 @@ class TestDecision:
 		assert verdict.reasons == ()
 		assert verdict.risk_score == 0.0
 
-	@pytest.mark.parametrize("severity", [Severity.INFO, Severity.LOW, Severity.MEDIUM, Severity.HIGH])
-	def test_anything_below_critical_is_a_warning(self, severity):
-		assert score([finding(severity)]).decision is Decision.WARNING
+	@pytest.mark.parametrize("severity", [Severity.INFO, Severity.LOW, Severity.MEDIUM])
+	def test_minor_findings_alone_are_an_allow_with_notes(self, severity):
+		"""Every one of 20 real policies used to be a Warning, Signal included,
+		because Warning meant 'any finding at all'."""
+		verdict = score([finding(severity)])
+		assert verdict.decision is Decision.ALLOW
+		assert len(verdict.findings) == 1, "the note is still listed"
+		assert verdict.metadata["notes_only"] is True
+
+	def test_a_clean_allow_has_no_notes_flag(self):
+		assert "notes_only" not in score([]).metadata
+
+	def test_a_high_finding_is_a_warning(self):
+		assert score([finding(Severity.HIGH)]).decision is Decision.WARNING
+
+	def test_a_warning_is_not_marked_as_notes_only(self):
+		assert "notes_only" not in score([finding(Severity.HIGH)]).metadata
+
+	def test_one_medium_rule_is_a_note_but_two_are_a_warning(self):
+		one = score([finding(Severity.MEDIUM, index=0)])
+		two = score([finding(Severity.MEDIUM, index=0), finding(Severity.MEDIUM, index=1)])
+		assert one.decision is Decision.ALLOW
+		assert two.decision is Decision.WARNING
+
+	def test_the_same_medium_rule_many_times_is_still_one_rule(self):
+		"""Counted per distinct rule, never per repeat: one rule matching fifty
+		sentences is one fact."""
+		repeats = [finding(Severity.MEDIUM, "same", index=i, rule_id="test.same") for i in range(50)]
+		assert score(repeats).decision is Decision.ALLOW
+
+	def test_a_headline_on_notes_does_not_say_flagged(self):
+		verdict = score([finding(Severity.LOW)])
+		assert verdict.metadata["headline"] == "No red flags detected in this policy."
 
 	def test_a_critical_finding_denies(self):
 		assert score([finding(Severity.CRITICAL)]).decision is Decision.DENY
@@ -48,6 +78,10 @@ class TestDecision:
 		out-vote one with few precise ones."""
 		verdict = score([finding(Severity.HIGH, reason=f"r{i}", index=i) for i in range(12)])
 		assert verdict.decision is Decision.WARNING
+
+	def test_a_pile_of_mild_findings_does_not_become_a_warning_by_count(self):
+		verdict = score([finding(Severity.LOW, reason=f"r{i}", index=i) for i in range(12)])
+		assert verdict.decision is Decision.ALLOW
 
 	def test_is_blocking_matches_the_decision(self):
 		assert score([finding(Severity.CRITICAL)]).is_blocking is True
@@ -114,6 +148,24 @@ class TestRiskScore:
 	def test_is_capped_at_100(self):
 		verdict = score([finding(Severity.CRITICAL, f"r{i}", index=i) for i in range(10)])
 		assert verdict.risk_score == 100.0
+
+	def test_a_rule_counts_once_however_often_it_matches(self):
+		"""Microsoft's 1,663-sentence policy and Wikipedia's shorter one both
+		scored 100 because every matching sentence was added."""
+		once = score([finding(Severity.MEDIUM, index=0, rule_id="test.rule")])
+		many = score([finding(Severity.MEDIUM, index=i, rule_id="test.rule") for i in range(60)])
+		assert many.risk_score == once.risk_score == SEVERITY_WEIGHTS[Severity.MEDIUM]
+
+	def test_a_rule_counts_at_its_worst_match(self):
+		verdict = score([
+			finding(Severity.LOW, index=0, rule_id="test.rule"),
+			finding(Severity.HIGH, index=1, rule_id="test.rule"),
+		])
+		assert verdict.risk_score == SEVERITY_WEIGHTS[Severity.HIGH]
+
+	def test_different_rules_add_up(self):
+		verdict = score([finding(Severity.MEDIUM, index=0), finding(Severity.MEDIUM, index=1)])
+		assert verdict.risk_score == 2 * SEVERITY_WEIGHTS[Severity.MEDIUM]
 
 	def test_a_worse_finding_scores_higher(self):
 		assert score([finding(Severity.CRITICAL)]).risk_score > score([finding(Severity.LOW)]).risk_score

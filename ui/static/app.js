@@ -153,7 +153,9 @@ function renderVerdict(data) {
   $("verdict-line").textContent =
     data.metadata && data.metadata.empty_document
       ? t("unreadable.empty_document", "No readable policy text was found. This is not an all-clear.")
-      : t(`decision.${decision}.line`, shape.line);
+      : decision === "allow" && (data.findings || []).length
+        ? t("decision.allow.notes.line", "No red flags. A few things worth knowing are listed below.")
+        : t(`decision.${decision}.line`, shape.line);
 
   const score = Number(data.risk_score) || 0;
   $("risk-score").textContent = String(Math.round(score));

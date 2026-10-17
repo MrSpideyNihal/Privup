@@ -289,3 +289,32 @@ class TestCli:
 		assert main(["--list-languages"]) == EXIT_OK
 		out = capsys.readouterr().out
 		assert "मराठी" in out and "हिन्दी" in out
+
+
+class TestAllowWithNotes:
+	"""A policy with only minor findings is an Allow that still lists them.
+	Saying 'flagged' about an Allow, in any language, would contradict it."""
+
+	@pytest.fixture
+	def proton(self):
+		return run("raw_text", load_text("generic_proton.txt"), "generic")
+
+	def test_the_source_verdict_is_an_allow_with_notes(self, proton):
+		assert proton.decision is Decision.ALLOW
+		assert proton.findings
+		assert proton.metadata["notes_only"] is True
+
+	@pytest.mark.parametrize("code", TRANSLATED)
+	def test_the_headline_says_no_red_flags(self, proton, code):
+		translated = translate(proton, code)
+		assert translated.decision is Decision.ALLOW
+		assert translated.metadata["headline"] == message(code, "headline.clean")
+
+	@pytest.mark.parametrize("code", TRANSLATED)
+	def test_the_notes_are_still_translated(self, proton, code):
+		translated = translate(proton, code)
+		assert len(translated.reasons) == len(proton.reasons)
+		assert translated.reasons != proton.reasons
+
+	def test_the_sentence_under_allow_admits_there_are_notes(self):
+		assert message("en", "decision.allow.notes.line") != message("en", "decision.allow.line")
