@@ -438,13 +438,27 @@ anywhere.
 
 ## Scoring
 
-- no findings → **Allow**
 - any `critical` finding → **Deny**
-- anything else → **Warning**
+- any `high` finding → **Warning**
+- medium findings from two or more *different* rules → **Warning**
+- anything else → **Allow**, with any findings still listed as notes
 
 Nothing accumulates into a Deny. Severities are set by rule authors, and
 escalating on volume would let a rule set with many weak rules out-vote one
 with few precise ones.
+
+Warning used to mean "any finding at all". Every real policy has one, so every
+one of 20 policies checked, from Signal to Microsoft, came back Warning and the
+verdict said nothing. An Allow now means "no red flags", and the minor things
+worth knowing are shown under it rather than hidden. The medium threshold
+counts distinct rules, never repeats: one rule matching fifty sentences is one
+fact. The numbers are `WARN_AT` and `WARN_AT_MEDIUM_RULES` in
+`core/scorer/scorer.py`.
+
+Only the lending rules have `critical` findings, so only they can Deny. A
+generic policy tops out at Warning on purpose: a Deny should rest on something
+that is plainly not permitted, as RBI's rules are, and not on a judgement
+about a company's business model.
 
 A document that produced no clauses returns **Warning**, never Allow. Several
 live lending sites render their policy entirely in JavaScript and return an
@@ -452,7 +466,12 @@ empty shell to a plain fetch; a confident green light for a page nobody read
 would be the worst failure this project could have.
 
 `risk_score` (0–100) is for sorting and for showing change over time. It is
-not the verdict.
+not the verdict. Each rule counts once, at its worst match, so a long policy
+does not outscore a short one just by repeating itself.
+
+Rule authors: before loosening or tightening a rule, run it over real policies.
+`tests/test_calibration.py` holds the real sentences that once misfired and
+real excerpts whose verdicts must stay put.
 
 ## Test fixtures
 

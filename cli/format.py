@@ -33,7 +33,11 @@ def _label(verdict: Verdict) -> str:
 
 def _blurb(verdict: Verdict) -> str:
 	"""A short line saying what the verdict means, because "WARNING" on its
-	own does not tell anyone what to do."""
+	own does not tell anyone what to do.
+
+	An Allow that still lists notes must not say nothing matched."""
+	if verdict.decision is Decision.ALLOW and verdict.findings:
+		return message(verdict.language, "decision.allow.notes.line")
 	return message(verdict.language, f"decision.{verdict.decision.value}.line")
 
 _ANSI = {

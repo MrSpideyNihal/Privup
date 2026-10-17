@@ -1,17 +1,17 @@
 {
  "micro": {
-  "true_positives": 25,
+  "true_positives": 26,
   "false_positives": 1,
-  "false_negatives": 12,
+  "false_negatives": 11,
   "support": 37,
-  "precision": 0.9615,
-  "recall": 0.6757,
-  "f1": 0.7937
+  "precision": 0.963,
+  "recall": 0.7027,
+  "f1": 0.8125
  },
  "macro": {
   "precision": 0.9844,
-  "recall": 0.8209,
-  "f1": 0.8771
+  "recall": 0.8387,
+  "f1": 0.893
  },
  "by_category": {
   "consent": {
@@ -78,13 +78,13 @@
    "f1": 0.6667
   },
   "tracking_profiling": {
-   "true_positives": 3,
+   "true_positives": 4,
    "false_positives": 0,
-   "false_negatives": 4,
+   "false_negatives": 3,
    "support": 7,
    "precision": 1.0,
-   "recall": 0.4286,
-   "f1": 0.6
+   "recall": 0.5714,
+   "f1": 0.7273
   }
  },
  "_note": "Recorded baseline for the rule matcher. A change that moves these is fine, but it must be deliberate and updated in the same commit. Regenerate with: python -m tests.evaluation --json"

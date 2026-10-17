@@ -137,7 +137,8 @@ def _headline(
 		return None
 	if verdict.metadata.get("empty_document"):
 		return _message(catalog, "headline.empty_document", missing)
-	if not findings:
+	# An Allow that still lists minor notes says "no red flags", not "flagged".
+	if not findings or verdict.metadata.get("notes_only"):
 		return _message(catalog, "headline.clean", missing)
 
 	topics: list[str] = []

@@ -2,9 +2,10 @@
 
 The decision rule is deliberately blunt:
 
-	no findings            -> Allow
-	any critical finding   -> Deny
-	anything else          -> Warning
+	any critical finding                 -> Deny
+	any high finding                     -> Warning
+	two or more distinct medium rules    -> Warning
+	anything else, with or without notes -> Allow
 
 Blunt because this output is read in the two seconds before someone taps
 Accept. A nuanced five-band score would be more defensible on paper and
@@ -19,15 +20,28 @@ particular: the ``loan_app`` set contributes two high-severity absence
 findings to almost any document, so a "three highs deny" rule would deny
 nearly everything and the verdict would stop meaning anything.
 
+Allow versus Warning is where this used to be too blunt. Warning was "any
+finding at all", and every real policy has one: run over 20 real policies,
+from Signal to Microsoft, every one came back Warning, so the verdict could
+not tell a private service from an invasive one. Now a document with only
+low and info findings, or a single medium one, is Allow, and its findings
+are still listed as things worth knowing. It takes a high finding, or medium
+findings from two different rules, to make it a Warning. The count is of
+distinct rules, never of repeats: the same rule matching fifty sentences is
+one fact.
+
 ``risk_score`` exists for sorting and for showing change over time. It is not
-the verdict and must never be presented as one.
+the verdict and must never be presented as one. It counts each rule once, at
+its worst match. It used to add every matching sentence, so it measured the
+length of a policy: Microsoft's 1,663-sentence statement and Wikipedia's
+shorter one both scored 100.
 """
 
 from __future__ import annotations
 
 from core.models import Decision, Finding, Severity, Verdict
 
-__all__ = ["Scorer", "SEVERITY_WEIGHTS", "DENY_AT"]
+__all__ = ["Scorer", "SEVERITY_WEIGHTS", "DENY_AT", "WARN_AT", "WARN_AT_MEDIUM_RULES"]
 
 # Contribution of one finding to the 0-100 risk score. Spaced so that a
 # critical finding alone dominates a handful of mediums, matching the fact
@@ -42,6 +56,13 @@ SEVERITY_WEIGHTS: dict[Severity, float] = {
 
 #: The severity at which a verdict becomes Deny.
 DENY_AT = Severity.CRITICAL
+
+#: Any finding at this severity or above makes a verdict at least a Warning.
+WARN_AT = Severity.HIGH
+
+#: How many distinct medium rules together make a Warning. One medium rule is
+#: a note; several, from different rules, are a pattern.
+WARN_AT_MEDIUM_RULES = 2
 
 # Worst first, then document order, so the reason a user reads first is the
 # reason that matters most.
@@ -81,6 +102,9 @@ RULE_LABELS: dict[str, str] = {
 	"rbi.disclosure.no_lender_named": "unnamed regulated lender",
 	"rbi.consent.bundled": "bundled consent",
 }
+
+
+CLEAN_HEADLINE = "No red flags detected in this policy."
 
 
 def generate_headline(ordered_findings: list[Finding]) -> str | None:
@@ -133,7 +157,7 @@ class Scorer:
 			return self._clean(rule_set, origin, clauses_analyzed)
 
 		worst = max(f.severity for f in ordered)
-		decision = Decision.DENY if worst >= DENY_AT else Decision.WARNING
+		decision = self._decide(ordered, worst)
 
 		# Two rules can reach the same conclusion about a document. The user
 		# does not need to be told the same thing twice, but the findings
@@ -149,6 +173,18 @@ class Scorer:
 		for finding in ordered:
 			counts[finding.severity.value] = counts.get(finding.severity.value, 0) + 1
 
+		# An Allow that still has findings carries minor notes, not red flags,
+		# so its headline says so rather than naming them as flagged.
+		notes_only = decision is Decision.ALLOW
+		metadata = {
+			"severity_counts": counts,
+			"worst_severity": worst.value,
+			"categories": sorted({f.category for f in ordered}),
+			"headline": CLEAN_HEADLINE if notes_only else generate_headline(ordered),
+		}
+		if notes_only:
+			metadata["notes_only"] = True
+
 		return Verdict(
 			decision=decision,
 			rule_set=rule_set,
@@ -157,18 +193,30 @@ class Scorer:
 			findings=ordered,
 			risk_score=self._risk_score(ordered),
 			clauses_analyzed=clauses_analyzed,
-			metadata={
-				"severity_counts": counts,
-				"worst_severity": worst.value,
-				"categories": sorted({f.category for f in ordered}),
-				"headline": generate_headline(ordered),
-			},
+			metadata=metadata,
 		)
 
 	@staticmethod
+	def _decide(ordered: list[Finding], worst: Severity) -> Decision:
+		if worst >= DENY_AT:
+			return Decision.DENY
+		if worst >= WARN_AT:
+			return Decision.WARNING
+		medium_rules = {f.rule_id for f in ordered if f.severity is Severity.MEDIUM}
+		if len(medium_rules) >= WARN_AT_MEDIUM_RULES:
+			return Decision.WARNING
+		return Decision.ALLOW
+
+	@staticmethod
 	def _risk_score(findings: list[Finding]) -> float:
-		total = sum(SEVERITY_WEIGHTS[f.severity] * f.confidence for f in findings)
-		return round(min(100.0, total), 1)
+		# One contribution per rule, at its worst match. Repeats of the same
+		# rule are one fact, however many sentences repeat it.
+		worst: dict[str, float] = {}
+		for f in findings:
+			weight = SEVERITY_WEIGHTS[f.severity] * f.confidence
+			if weight > worst.get(f.rule_id, 0.0):
+				worst[f.rule_id] = weight
+		return round(min(100.0, sum(worst.values())), 1)
 
 	@staticmethod
 	def _clean(rule_set: str, origin: str, clauses_analyzed: int) -> Verdict:
@@ -204,5 +252,5 @@ class Scorer:
 			findings=[],
 			risk_score=0.0,
 			clauses_analyzed=clauses_analyzed,
-			metadata={"severity_counts": {}, "categories": [], "headline": "No red flags detected in this policy."},
+			metadata={"severity_counts": {}, "categories": [], "headline": CLEAN_HEADLINE},
 		)

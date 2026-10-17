@@ -92,6 +92,7 @@
     "options.dismissed": "Dismissed sites",
     "options.dismissed.count": "{n} sites set to \"Don't show again\"",
     "options.unmute_all": "Unmute all",
-    "options.saved": "Settings saved"
+    "options.saved": "Settings saved",
+    "decision.allow.notes.line": "No red flags. A few things worth knowing are listed below."
   }
 }
