@@ -93,6 +93,18 @@
     "options.dismissed.count": "{n} sites set to \"Don't show again\"",
     "options.unmute_all": "Unmute all",
     "options.saved": "Settings saved",
-    "decision.allow.notes.line": "No red flags. A few things worth knowing are listed below."
+    "decision.allow.notes.line": "No red flags. A few things worth knowing are listed below.",
+    "app.tagline": "Know what you're agreeing to.",
+    "app.input_hint": "Paste a policy, or a link to one",
+    "app.analyze": "Analyze",
+    "app.analyzing": "Reading it on this phone.",
+    "app.check_as": "Check it as",
+    "app.rule_set.generic": "Any app or website",
+    "app.rule_set.loan_app": "Loan app",
+    "app.language": "Language",
+    "app.error.empty": "Paste a policy or a link first.",
+    "app.error.fetch": "Could not open that link. Check the address and your connection.",
+    "app.private": "Checked on this phone. Nothing you paste is sent anywhere.",
+    "app.new_check": "Check another"
   }
 }
