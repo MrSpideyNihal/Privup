@@ -27,11 +27,10 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Any
 
-from core.models import Finding, Verdict
+from core.models import Finding, Verdict, fill_template
 from core.translator.catalog import (
 	SOURCE_LANGUAGE,
 	Catalog,
-	fill,
 	get_catalog,
 	message,
 )
@@ -97,7 +96,7 @@ def _finding(finding: Finding, catalog: Catalog, missing: set[str]) -> Finding:
 	if template is None:
 		missing.add(f"rules.{finding.rule_id}.{variant}")
 		return finding
-	reason = fill(template, finding.metadata.get("reason_values") or {})
+	reason = fill_template(template, finding.metadata.get("reason_values") or {})
 	return replace(
 		finding,
 		reason=reason,

@@ -12,6 +12,7 @@ from core.models.schemas import (
 	Verdict,
 	utc_now,
 )
+from core.models.templates import fill_template
 
 __all__ = [
 	"Clause",
@@ -20,5 +21,6 @@ __all__ = [
 	"Finding",
 	"Severity",
 	"Verdict",
+	"fill_template",
 	"utc_now",
 ]

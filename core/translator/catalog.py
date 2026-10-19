@@ -24,10 +24,11 @@ device.
 from __future__ import annotations
 
 import json
-import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping
+
+from core.models import fill_template
 
 __all__ = [
 	"LOCALE_DIR",
@@ -37,7 +38,6 @@ __all__ = [
 	"UnknownLanguageError",
 	"available_languages",
 	"describe_languages",
-	"fill",
 	"get_catalog",
 	"message",
 	"messages",
@@ -49,8 +49,6 @@ LOCALE_DIR = Path(__file__).parent / "locales"
 #: The language rule sets are written in, and the one every catalog falls
 #: back to.
 SOURCE_LANGUAGE = "en"
-
-_PLACEHOLDER = re.compile(r"\{(\w+)\}")
 
 _LOADED: dict[str, "Catalog"] = {}
 _SCANNED = False
@@ -164,24 +162,6 @@ def get_catalog(code: str) -> Catalog:
 		raise UnknownLanguageError(code) from None
 
 
-def fill(template: str, values: Mapping[str, Any]) -> str:
-	"""Substitute {placeholders}, leaving unknown ones visible.
-
-	Formats numbers the same way the analyzer does, so a translated reason
-	quotes exactly the figure the English one would.
-	"""
-	def replace(match: re.Match[str]) -> str:
-		key = match.group(1)
-		if key not in values:
-			return match.group(0)
-		value = values[key]
-		if isinstance(value, float):
-			return f"{value:.6g}"
-		return str(value)
-
-	return _PLACEHOLDER.sub(replace, template)
-
-
 def message(language: str, key: str, **values: Any) -> str:
 	"""One UI message in ``language``, falling back to English, then to the key.
 
@@ -192,7 +172,7 @@ def message(language: str, key: str, **values: Any) -> str:
 	for code in (language, SOURCE_LANGUAGE):
 		catalog = _LOADED.get(code)
 		if catalog is not None and key in catalog.messages:
-			return fill(catalog.messages[key], values)
+			return fill_template(catalog.messages[key], values)
 	return key
 
 

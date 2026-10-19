@@ -18,6 +18,43 @@ from core.tags import get_tag_set, parse_rule_set
 from tests.fixtures import load_text
 
 
+def _boom(origin: str):
+	raise RuntimeError("directory is down")
+
+
+class TestDirectoryHook:
+	"""A lookup failing is not evidence about the lender, but it must not be
+	invisible either: it used to vanish without a trace."""
+
+	@staticmethod
+	def rule_set(hook: str):
+		from types import SimpleNamespace
+
+		return SimpleNamespace(metadata={"dla_directory": {"hook": hook}})
+
+	def test_a_hook_that_raises_means_not_checked_and_is_logged(self, caplog):
+		with caplog.at_level("WARNING"):
+			result = RuleAnalyzer._run_directory_hook(self.rule_set("tests.test_analyzer._boom"), "lender.example")
+		assert result is None
+		assert "tests.test_analyzer._boom" in caplog.text
+		assert "lender.example" in caplog.text
+		assert "directory is down" in caplog.text
+
+	@pytest.mark.parametrize("hook", ["no_such_package.lookup", "tests.test_analyzer.not_a_function"])
+	def test_a_hook_that_cannot_be_loaded_means_not_checked_and_is_logged(self, caplog, hook):
+		with caplog.at_level("WARNING"):
+			result = RuleAnalyzer._run_directory_hook(self.rule_set(hook), "lender.example")
+		assert result is None
+		assert hook in caplog.text
+
+	def test_a_rule_set_without_a_hook_costs_nothing_and_logs_nothing(self, caplog):
+		from types import SimpleNamespace
+
+		with caplog.at_level("WARNING"):
+			assert RuleAnalyzer._run_directory_hook(SimpleNamespace(metadata={}), "x") is None
+		assert caplog.text == ""
+
+
 def clauses_from(text: str) -> list[Clause]:
 	return SimpleSummarizer().clean(get_driver("raw_text").fetch(text))
 

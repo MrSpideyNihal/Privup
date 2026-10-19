@@ -23,19 +23,18 @@ the document never said at all.
 
 from __future__ import annotations
 
-import re
+import logging
 from importlib import import_module
 from typing import Any, Callable, Pattern
 
 from core.analyzer import numeric
 from core.analyzer.base import BaseAnalyzer
-from core.models import Clause, Finding, Severity
+from core.models import Clause, Finding, Severity, fill_template
 from core.tags import Rule, RuleSet, Scope
 
 __all__ = ["RuleAnalyzer"]
 
-# Placeholder in a rule's reason line, e.g. "{matched}" or "{annualised}".
-_PLACEHOLDER = re.compile(r"\{(\w+)\}")
+logger = logging.getLogger(__name__)
 
 # Clause used to carry a document-scoped finding. Index -1 marks it as not
 # corresponding to any real sentence, so a front end can render it as a note
@@ -54,23 +53,6 @@ def _first_match(patterns: tuple[Pattern[str], ...], text: str) -> str | None:
 def _all_match(patterns: tuple[Pattern[str], ...], text: str) -> bool:
 	return all(pattern.search(text) for pattern in patterns)
 
-
-def _fill(template: str, values: dict[str, Any]) -> str:
-	"""Substitute {placeholders}, leaving unknown ones as written.
-
-	A rule author who mistypes a placeholder gets a visible ``{typo}`` in the
-	output rather than a crash in front of a user mid-consent-dialog.
-	"""
-	def replace(match: re.Match[str]) -> str:
-		key = match.group(1)
-		if key not in values:
-			return match.group(0)
-		value = values[key]
-		if isinstance(value, float):
-			return f"{value:.6g}"
-		return str(value)
-
-	return _PLACEHOLDER.sub(replace, template)
 
 
 class RuleAnalyzer(BaseAnalyzer):
@@ -181,7 +163,7 @@ class RuleAnalyzer(BaseAnalyzer):
 			rule_set=rule_set.name,
 			category=rule.category,
 			severity=severity,
-			reason=_fill(reason_template, values),
+			reason=fill_template(reason_template, values),
 			clause=clause,
 			matched_text=matched_text,
 			confidence=rule.confidence,
@@ -266,6 +248,14 @@ class RuleAnalyzer(BaseAnalyzer):
 
 		try:
 			hook: Callable[[str], Any] = getattr(import_module(module_name), attribute)
+		except (ImportError, AttributeError):
+			logger.warning("directory hook %r cannot be loaded; treating %s as not checked", path, origin, exc_info=True)
+			return None
+
+		try:
 			return hook(origin)
 		except Exception:
+			# The hook is someone else's code and may fail in any way. Either
+			# way the lender was not checked, which is not a finding about it.
+			logger.warning("directory hook %r failed on %s; treating it as not checked", path, origin, exc_info=True)
 			return None

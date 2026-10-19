@@ -127,14 +127,11 @@ def test_watermark_present_in_integrated_files():
     watermark_marker = "PRIVACY-URL-FINDER"
     repo_root = Path(__file__).resolve().parents[1]
 
-    # Check url_driver.py
     url_driver_code = (repo_root / "core" / "scraper" / "url_driver.py").read_text(encoding="utf-8")
     assert watermark_marker in url_driver_code
 
-    # Check resolver.py
     resolver_code = (repo_root / "core" / "scraper" / "resolver.py").read_text(encoding="utf-8")
     assert watermark_marker in resolver_code
 
-    # Check finder/__init__.py
     finder_init_code = (repo_root / "core" / "scraper" / "finder" / "__init__.py").read_text(encoding="utf-8")
     assert watermark_marker in finder_init_code

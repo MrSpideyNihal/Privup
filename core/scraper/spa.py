@@ -285,7 +285,6 @@ def _try_wayback(url: str, timeout: float = _WAYBACK_TIMEOUT) -> str:
 	Returns the visible text content of the snapshot, or an empty string if
 	no snapshot exists or the request fails.
 	"""
-	# Step 1: query the CDX API for the latest snapshot.
 	cdx_params = (
 		f"url={quote(url, safe='')}"
 		"&output=json"
@@ -311,7 +310,6 @@ def _try_wayback(url: str, timeout: float = _WAYBACK_TIMEOUT) -> str:
 	original = rows[1][1]
 	snapshot_url = f"{_WAYBACK_WEB}/{timestamp}id_/{original}"
 
-	# Step 2: fetch the snapshot.
 	try:
 		req = Request(snapshot_url, headers={"User-Agent": "PrivUp/1.0"})
 		with urlopen(req, timeout=timeout) as resp:
@@ -324,7 +322,6 @@ def _try_wayback(url: str, timeout: float = _WAYBACK_TIMEOUT) -> str:
 	except (HTTPError, URLError, TimeoutError, OSError):
 		return ""
 
-	# Step 3: strip tags and return visible text.
 	parser = _TextExtractor()
 	try:
 		parser.feed(html)
