@@ -105,6 +105,10 @@
     "app.error.empty": "Paste a policy or a link first.",
     "app.error.fetch": "Could not open that link. Check the address and your connection.",
     "app.private": "Checked on this phone. Nothing you paste is sent anywhere.",
-    "app.new_check": "Check another"
+    "app.new_check": "Check another",
+    "app.update.title": "Update available",
+    "app.update.body": "A new version of PrivUp is ready, with the latest rules and translations.",
+    "app.update.now": "Update",
+    "app.update.later": "Later"
   }
 }
