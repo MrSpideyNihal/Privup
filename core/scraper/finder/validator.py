@@ -97,7 +97,6 @@ class PolicyValidator:
                     if og_match and any(k in og_match.group(1).lower() for k in ("privacy", "policy")):
                         return re.sub(r"\s+", " ", og_match.group(1)).strip()[:120]
                 return clean[:120]
-        # Check og:title
         og_match = re.search(r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
         if not og_match:
             og_match = re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:title["\']', html, re.IGNORECASE)
@@ -124,7 +123,6 @@ class PolicyValidator:
         title = self.extract_title(html)
         lower_title = title.lower()
 
-        # Check negative patterns first
         for neg in NEGATIVE_PATTERNS:
             if re.search(neg, lower_title) or (re.search(neg, lower_html[:1500]) and len(lower_html) < 2500):
                 return ValidationResult(

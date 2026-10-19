@@ -195,10 +195,14 @@ function renderTiles(data) {
       const tile = document.createElement("div");
       tile.className = "tile";
       tile.style.setProperty("--tone", TONES[name]);
-      tile.innerHTML =
-        `<span class="tile-label"><i class="dot"></i></span><strong></strong>`;
-      tile.querySelector(".tile-label").append(t(`severity.${name}`, name));
-      tile.querySelector("strong").textContent = String(counts[name]);
+      const label = document.createElement("span");
+      label.className = "tile-label";
+      const dot = document.createElement("i");
+      dot.className = "dot";
+      label.append(dot, t(`severity.${name}`, name));
+      const count = document.createElement("strong");
+      count.textContent = String(counts[name]);
+      tile.append(label, count);
       return tile;
     })
   );

@@ -173,7 +173,6 @@ class DatasetManager:
 
         if domain and domain in self._domain_index:
             existing = self._domain_index[domain]
-            # Update privacy url if existing was empty
             if not existing.get("privacy_url"):
                 existing["privacy_url"] = entry["privacy_url"]
                 if persist:

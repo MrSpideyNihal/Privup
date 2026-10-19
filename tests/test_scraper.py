@@ -90,6 +90,27 @@ class TestRegistry:
 	def test_plugin_loading_survives_no_plugins_installed(self):
 		assert isinstance(registry_module.load_plugin_drivers(), list)
 
+	def test_a_broken_plugin_is_skipped_and_named_in_the_log(self, monkeypatch, caplog):
+		class Broken:
+			name = "broken_plugin"
+
+			def load(self):
+				raise ImportError("no such module")
+
+		class Fine:
+			name = "fine_plugin"
+
+			def load(self):
+				return None
+
+		monkeypatch.setattr(registry_module.metadata, "entry_points", lambda group: [Broken(), Fine()])
+		with caplog.at_level("WARNING", logger=registry_module.logger.name):
+			loaded = registry_module.load_plugin_drivers()
+
+		assert loaded == ["fine_plugin"], "one broken plugin must not stop the others"
+		assert "broken_plugin" in caplog.text
+		assert "no such module" in caplog.text, "the reason is in the log, not lost"
+
 
 class TestRawTextDriver:
 	@pytest.fixture

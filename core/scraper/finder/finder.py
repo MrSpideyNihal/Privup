@@ -64,7 +64,6 @@ class PrivacyURLFinder:
         self.dataset_manager = dataset_manager or DatasetManager()
         self.validator = PolicyValidator()
 
-        # Initialize resolvers
         self.dataset_resolver = DatasetResolver(self.dataset_manager)
         self.heuristics_resolver = HeuristicsResolver(timeout=self.timeout)
         self.crawler_resolver = HomepageCrawlerResolver(timeout=self.timeout)

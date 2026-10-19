@@ -178,3 +178,24 @@ class TestVerdict:
 	def test_tolerates_a_minimal_dict(self):
 		verdict = Verdict.from_dict({"decision": "allow", "rule_set": "generic", "origin": "x"})
 		assert verdict.findings == () and verdict.reasons == ()
+
+
+class TestFillTemplate:
+	"""One implementation serves the analyzer and the translator, so a figure
+	is formatted identically in every language."""
+
+	def test_fills_known_placeholders(self):
+		from core.models import fill_template
+
+		assert fill_template("up to {value}% a year", {"value": 36}) == "up to 36% a year"
+
+	def test_a_whole_float_has_no_trailing_zero(self):
+		from core.models import fill_template
+
+		assert fill_template("{annualised}%", {"annualised": 73.0}) == "73%"
+		assert fill_template("{value}%", {"value": 0.2}) == "0.2%"
+
+	def test_an_unknown_placeholder_stays_visible_rather_than_crashing(self):
+		from core.models import fill_template
+
+		assert fill_template("{typo} here", {}) == "{typo} here"

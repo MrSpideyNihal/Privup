@@ -28,11 +28,15 @@ from .finder import PrivacyURLFinder
 from .models import PolicyResult, ResolutionStatus
 
 
+logger = logging.getLogger("privacy_url_finder")
+
 if hasattr(sys.stdout, "reconfigure"):
     try:
         sys.stdout.reconfigure(encoding="utf-8")
-    except Exception:
-        pass
+    except (ValueError, OSError):
+        # Best effort: some wrapped streams cannot change encoding. The only
+        # cost is that non-ASCII output may print garbled.
+        logger.debug("stdout cannot be switched to UTF-8", exc_info=True)
 
 
 def format_text_result(res: PolicyResult, verbose: bool = False) -> str:

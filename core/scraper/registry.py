@@ -15,10 +15,13 @@ declaring a ``privup.drivers`` entry point:
 
 from __future__ import annotations
 
+import logging
 from importlib import metadata
 from typing import Iterator, Type, TypeVar
 
 from core.scraper.base import Driver
+
+logger = logging.getLogger(__name__)
 
 __all__ = [
 	"register_driver",
@@ -109,6 +112,10 @@ def load_plugin_drivers() -> list[str]:
 		try:
 			entry_point.load()
 		except Exception:
+			# A plugin is someone else's code, so any failure to import it is
+			# possible. Skip it, but say which one, or nobody can find out why a
+			# driver they installed is missing.
+			logger.warning("driver plugin %r failed to load and was skipped", entry_point.name, exc_info=True)
 			continue
 		loaded.append(entry_point.name)
 	return loaded
