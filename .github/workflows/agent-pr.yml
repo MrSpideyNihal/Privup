@@ -1,0 +1,163 @@
+# Agent PR runner: runs the agents Agent PR dispatches for this repository's pull requests.
+# Docs: https://pr-agent-chi.vercel.app/dashboard/repos
+# Fork-safe: triggered only by Agent PR (workflow_dispatch, never pull_request_target), no secrets,
+# and the pull request is checked out read-only without credentials.
+name: Agent PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Agent PR run id
+        required: true
+        type: string
+      stage:
+        description: Pipeline stage
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write # lets the job prove to Agent PR which repository it runs in (OIDC)
+
+concurrency:
+  group: agent-pr-${{ inputs.run_id }}-${{ inputs.stage }}
+
+jobs:
+  agents:
+    name: Agent PR stage ${{ inputs.stage }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      AGENT_PR_URL: https://pr-agent-chi.vercel.app
+      RUN_ID: ${{ inputs.run_id }}
+      STAGE: ${{ inputs.stage }}
+    steps:
+      - name: Fetch the job from Agent PR
+        id: job
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$RUN_ID" =~ ^[0-9a-f-]{36}$ ]] || { echo "::error::Invalid run_id"; exit 1; }
+          [[ "$STAGE" =~ ^[0-9]{1,3}$ ]] || { echo "::error::Invalid stage"; exit 1; }
+          cat > "$RUNNER_TEMP/agent-pr.sh" <<'EOF'
+          oidc_token() {
+            curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+              "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AGENT_PR_URL" | jq -r .value
+          }
+          EOF
+          source "$RUNNER_TEMP/agent-pr.sh"
+          job="$RUNNER_TEMP/job.json"
+          status=$(curl -sS -o "$job" -w '%{http_code}' -H "Authorization: Bearer $(oidc_token)" \
+            "$AGENT_PR_URL/api/runner/runs/$RUN_ID/stages/$STAGE")
+          if [ "$status" = "409" ]; then
+            echo "Nothing to do: $(jq -r .error "$job")"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          [ "$status" = "200" ] || { echo "::error::Agent PR answered $status: $(cat "$job")"; exit 1; }
+          pr=$(jq -r .pullRequest.number "$job")
+          sha=$(jq -r .pullRequest.headSha "$job")
+          fms=$(jq -r '[.steps[] | select(.agent == "fixmyslop") | .spec.fixmyslopVersion][0] // ""' "$job")
+          static=$(jq -r '[.steps[] | select(.agent == "fixmyslop") | .config.staticAnalysis] | any' "$job")
+          [[ "$pr" =~ ^[0-9]+$ && "$sha" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::Invalid job"; exit 1; }
+          [[ -z "$fms" || "$fms" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::Invalid FixMySlop version"; exit 1; }
+          {
+            echo "skip=false"
+            echo "pr=$pr"
+            echo "sha=$sha"
+            echo "fixmyslop=$fms"
+            echo "static=$static"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up Python
+        if: steps.job.outputs.skip == 'false' && steps.job.outputs.fixmyslop != ''
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install FixMySlop
+        if: steps.job.outputs.skip == 'false' && steps.job.outputs.fixmyslop != ''
+        shell: bash
+        env:
+          FMS_VERSION: ${{ steps.job.outputs.fixmyslop }}
+          FMS_STATIC: ${{ steps.job.outputs.static }}
+        run: |
+          set -euo pipefail
+          extra=""
+          if [ "$FMS_STATIC" = "true" ]; then extra="[analysis]"; fi
+          python -m pip install --disable-pip-version-check --quiet "fixmyslop${extra}==$FMS_VERSION"
+
+      # Checked out after the tools are installed, into its own folder, without credentials. Nothing in it is executed.
+      - name: Check out the pull request
+        if: steps.job.outputs.skip == 'false'
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ steps.job.outputs.pr }}/head
+          path: pr
+          persist-credentials: false
+
+      - name: Run agents
+        if: steps.job.outputs.skip == 'false'
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ steps.job.outputs.sha }}
+        run: |
+          set -euo pipefail
+          source "$RUNNER_TEMP/agent-pr.sh"
+          job="$RUNNER_TEMP/job.json"
+          cd pr
+          if [ "$(git rev-parse HEAD)" != "$EXPECTED_SHA" ]; then
+            echo "The pull request has newer commits; the newer Agent PR run covers them."
+            exit 0
+          fi
+          is_fork=$(jq -r .pullRequest.isFork "$job")
+          jq -c '.steps[]' "$job" | while read -r step; do
+            id=$(jq -r .stepId <<<"$step")
+            agent=$(jq -r .agent <<<"$step")
+            [[ "$id" =~ ^[0-9a-f-]{36}$ ]] || continue
+            out="$RUNNER_TEMP/$id.json"
+            body="$RUNNER_TEMP/$id.body.json"
+            case "$agent" in
+              fixmyslop)
+                args=(-f json --fail-on none --min-severity "$(jq -r '.config.minSeverity // "low"' <<<"$step")")
+                if [ "$(jq -r '.config.staticAnalysis // false' <<<"$step")" != "true" ]; then args+=(--no-static); fi
+                if [ "$is_fork" = "true" ]; then args+=(--no-baseline); fi
+                while IFS= read -r rule; do args+=(--only "$rule"); done < <(jq -r '.config.only[]?' <<<"$step")
+                files=()
+                while IFS= read -r f; do
+                  if [ -f "$f" ]; then files+=("./$f"); fi
+                done < <(jq -r '.files[]' <<<"$step")
+                if [ ${#files[@]} -eq 0 ]; then
+                  echo '{"repo_path":"","scanned_files":0,"slop_score":0,"grade":"A","issues":[]}' > "$out"
+                else
+                  fixmyslop scan "${files[@]}" "${args[@]}" > "$out" || true
+                fi
+                if jq -e '.issues' "$out" > /dev/null 2>&1; then
+                  jq -c '{ok: true, output: (.issues |= .[:500])}' "$out" > "$body"
+                else
+                  jq -nc --arg e "fixmyslop did not produce a JSON report" '{ok: false, error: $e}' > "$body"
+                fi
+                ;;
+              *)
+                jq -nc --arg a "$agent" \
+                  '{ok: false, error: ("This agent-pr.yml cannot run the agent " + $a + ". Update it from the dashboard.")}' > "$body"
+                ;;
+            esac
+            status=$(curl -sS -o "$RUNNER_TEMP/$id.response" -w '%{http_code}' -X POST \
+              -H "Authorization: Bearer $(oidc_token)" -H "Content-Type: application/json" \
+              --data-binary "@$body" "$AGENT_PR_URL/api/runner/steps/$id/result")
+            echo "$agent: $status $(cat "$RUNNER_TEMP/$id.response")"
+            # 409 = the run was cancelled or superseded meanwhile; that is fine.
+            if [ "$status" != "200" ] && [ "$status" != "409" ]; then exit 1; fi
+          done
+
+      - name: Tell Agent PR the job failed
+        if: failure() && steps.job.outputs.skip != 'true'
+        shell: bash
+        run: |
+          source "$RUNNER_TEMP/agent-pr.sh" || exit 0
+          logs="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          jq -nc --arg e "The Agent PR workflow failed. Logs: $logs" '{error: $e}' > "$RUNNER_TEMP/fail.json"
+          curl -sS -X POST -H "Authorization: Bearer $(oidc_token)" -H "Content-Type: application/json" \
+            --data-binary "@$RUNNER_TEMP/fail.json" "$AGENT_PR_URL/api/runner/runs/$RUN_ID/stages/$STAGE" || true
